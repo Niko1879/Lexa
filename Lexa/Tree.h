@@ -46,5 +46,15 @@ namespace Lexa
 			root->left.swap(left.root);
 			root->right.swap(right.root);
 		}
+
+		T& Data()
+		{
+			return root->data;
+		}
+
+		const T& Data() const
+		{
+			return root->data;
+		}
 	};
 }
