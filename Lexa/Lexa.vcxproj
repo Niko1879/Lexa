@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Token.h" />
+    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Lexer.cpp" />

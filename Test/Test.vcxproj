@@ -34,6 +34,7 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="InterpreterTestDefs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestLexer.cpp" />
@@ -43,6 +44,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
