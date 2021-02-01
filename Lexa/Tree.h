@@ -8,53 +8,65 @@ namespace Lexa
 	class Tree
 	{
 	private:
-		struct Node;
+	
 		
-		using Pointer = std::unique_ptr<Node>;
-
-		struct Node
-		{
-			template<class... Args>
-			Node(Args&& ...args) : data(std::forward<Args>(args)...) {}
-
-			T data;
-			Pointer left;
-			Pointer right;
-		};
+		using Pointer = std::unique_ptr<Tree>;
 
 		template<class... Args>
 		Pointer MakePtr(Args&&... args)
 		{
-			return std::make_unique<Node>(std::forward<Args>(args)...);
+			return std::make_unique<Tree>(std::forward<Args>(args)...);
 		}
 
-		Pointer root;
+		T data;
+		Pointer left;
+		Pointer right;
 	
 	public:
-		Tree(const T& data) : root(MakePtr(data)) {}
+		Tree(const T& data) : data(data), left(nullptr), right(nullptr) {}
 
-		Tree(T&& data) noexcept : root(MakePtr(std::move(data))) {}
+		Tree(T&& data) noexcept : data(std::move(data)), left(nullptr), right(nullptr) {}
 
 		Tree(const T& data, Tree&& left, Tree&& right) : Tree(data)
 		{
-			root->left.swap(left.root);
-			root->right.swap(right.root);
+			this->left = MakePtr(std::move(left));
+			this->right = MakePtr(std::move(right));
 		}
 
 		Tree(T&& data, Tree&& left, Tree&& right) : Tree(std::move(data))
 		{
-			root->left.swap(left.root);
-			root->right.swap(right.root);
+			this->left = MakePtr(std::move(left));
+			this->right = MakePtr(std::move(right));
 		}
 
 		T& Data()
 		{
-			return root->data;
+			return data;
 		}
 
 		const T& Data() const
 		{
-			return root->data;
+			return data;
+		}
+
+		Tree& Left()
+		{
+			return *left;
+		}
+
+		const Tree& Left() const
+		{
+			return *left;
+		}
+
+		Tree& Right()
+		{
+			return *right;
+		}
+
+		const Tree& Right() const
+		{
+			return *right;
 		}
 	};
 }
