@@ -2,18 +2,15 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <sstream>
+#include <stdexcept>
+#include "Token.h"
+
 
 namespace Lexa
 {
 	namespace Interpreter
 	{
-		enum class TokenType
-		{
-			Number,
-			Operation,
-		};
-
-
 		enum class Operation
 		{
 			Plus,
@@ -32,16 +29,6 @@ namespace Lexa
 				{"/", Operation::Divide},
 				{"^", Operation::Raise},
 			};
-
-
-		struct Token
-		{
-			TokenType type;
-			std::string value;
-		};
-
-
-		bool operator==(const Token& t1, const Token& t2);
 
 
 		std::vector<Token> Tokenise(const std::string& expression);
