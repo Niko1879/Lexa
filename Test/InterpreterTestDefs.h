@@ -1,7 +1,5 @@
 #pragma once
-#include "Lexer.h"
-#include "Tree.h"
-
+#include "Token.h"
 
 namespace InterpreterTest
 {

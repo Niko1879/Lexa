@@ -35,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="InterpreterTestDefs.h" />
+    <ClInclude Include="TestParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestLexer.cpp" />

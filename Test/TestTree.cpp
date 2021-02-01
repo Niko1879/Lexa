@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "InterpreterTestDefs.h"
-
+#include "Tree.h"
 
 namespace InterpreterTest
 {

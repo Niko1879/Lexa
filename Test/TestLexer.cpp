@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "InterpreterTestDefs.h"
+#include "Lexer.h"
 
 
 namespace InterpreterTest
