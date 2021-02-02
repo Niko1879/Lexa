@@ -96,4 +96,34 @@ namespace InterpreterTest
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
 	}
+
+
+	TEST(TestParser, TestParseFunction)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::Number, "3"},
+			Tok{Type::Operation, "*"},
+			Tok{Type::Function, "cos"},
+			Tok{Type::LeftBracket, "("},
+			Tok{Type::Variable, "x"},
+			Tok{Type::RightBracket, ")"},
+			Tok{Type::Operation, "+"},
+			Tok{Type::Function, "sin"},
+			Tok{Type::LeftBracket, "("},
+			Tok{Type::Variable, "y"},
+			Tok{Type::RightBracket, ")"},
+		};
+
+		Lexa::Tree<Tok> arg1(Tok{ Type::Variable, "x" });
+		Lexa::Tree<Tok> l1(Tok{ Type::Number, "3" });
+		Lexa::Tree<Tok> r1(Tok{ Type::Function, "cos" }, std::move(arg1), true);
+		Lexa::Tree<Tok> p1(Tok{ Type::Operation, "*" }, std::move(l1), std::move(r1));
+
+		Lexa::Tree<Tok> arg2(Tok{ Type::Variable, "y" });
+		Lexa::Tree<Tok> p2(Tok{ Type::Function, "sin" }, std::move(arg2), true);
+		Lexa::Tree<Tok> root(Tok{ Type::Operation, "+" }, std::move(p1), std::move(p2));
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
 }

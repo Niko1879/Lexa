@@ -7,11 +7,22 @@ namespace Lexa
 	{
 		void _Pop(std::vector<ParseTree>& pTrees, std::vector<Token>& stack)
 		{
-			ParseTree left(std::move(pTrees[pTrees.size() - 2]));
-			ParseTree right(std::move(pTrees[pTrees.size() - 1]));
-			pTrees.pop_back();
-			pTrees.pop_back();
-			pTrees.emplace_back(stack.back(), std::move(left), std::move(right));
+			if (stack.back().type == TokenType::Operation)
+			{
+				ParseTree left(std::move(pTrees[pTrees.size() - 2]));
+				ParseTree right(std::move(pTrees[pTrees.size() - 1]));
+				pTrees.pop_back();
+				pTrees.pop_back();
+				pTrees.emplace_back(stack.back(), std::move(left), std::move(right));
+			}
+
+			else
+			{
+				ParseTree left(std::move(pTrees.back()));
+				pTrees.pop_back();
+				pTrees.emplace_back(stack.back(), std::move(left), true);
+			}
+
 			stack.pop_back();
 		}
 
@@ -28,6 +39,10 @@ namespace Lexa
 				case TokenType::Number:
 				case TokenType::Variable:
 					partialTrees.emplace_back(t);
+					break;
+
+				case TokenType::Function:
+					stack.push_back(t);
 					break;
 
 				case TokenType::Operation:
@@ -52,7 +67,8 @@ namespace Lexa
 					{
 						_Pop(partialTrees, stack);
 					}
-					if (stack.size() > 0) stack.pop_back();
+					if (stack.size() > 0) stack.pop_back(); //pop the left bracket
+					if (stack.size() > 0) _Pop(partialTrees, stack); //pop function
 					break;
 
 				default:
