@@ -35,7 +35,6 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="InterpreterTestDefs.h" />
-    <ClInclude Include="TestParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestLexer.cpp" />
@@ -45,6 +44,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestParser.cpp" />
     <ClCompile Include="TestTree.cpp" />
   </ItemGroup>
   <ItemGroup>

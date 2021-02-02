@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "InterpreterTestDefs.h"
 #include "Parser.h"
-#include "pch.h"
 
 
 namespace InterpreterTest
