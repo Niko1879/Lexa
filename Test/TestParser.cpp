@@ -147,4 +147,42 @@ namespace InterpreterTest
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
 	}
+
+
+	TEST(TestParser, TestThrowsOnInvalid)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::Number, "1"},
+			Tok{Type::BinaryOperation, "*"},
+			Tok{Type::BinaryOperation, "/"},
+			Tok{Type::Number, "1"},
+		};
+
+		EXPECT_THROW(Lexa::Interpreter::Parse(tokens), std::invalid_argument);
+	}
+
+
+	TEST(TestParser, TestThrowsOnInvalid2)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::LeftBracket, "("},
+			Tok{Type::Number, "1"},
+			Tok{Type::BinaryOperation, "/"},
+			Tok{Type::Number, "1"},
+		};
+
+		EXPECT_THROW(Lexa::Interpreter::Parse(tokens), std::invalid_argument);
+	}
+
+
+	TEST(TestParser, TestThrowsOnInvalid3)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::RightBracket, "("},
+			Tok{Type::Variable, "x"},
+			Tok{Type::Variable, "y"},
+		};
+
+		EXPECT_THROW(Lexa::Interpreter::Parse(tokens), std::invalid_argument);
+	}
 }
