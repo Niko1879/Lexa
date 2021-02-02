@@ -12,6 +12,7 @@ namespace Lexa
 			Operation,
 			LeftBracket,
 			RightBracket,
+			Variable,
 		};
 
 
@@ -41,6 +42,7 @@ namespace Lexa
 			{TokenType::Operation, "Operation"},
 			{TokenType::LeftBracket, "LeftBracket"},
 			{TokenType::RightBracket, "RightBracket"},
+			{TokenType::Variable, "Variable"},
 		};
 
 

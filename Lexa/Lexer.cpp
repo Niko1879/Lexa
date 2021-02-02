@@ -39,6 +39,9 @@ namespace Lexa
 				else if (curr == ')')
 					tokens.push_back(Token{ TokenType::RightBracket, curr_s });
 
+				else if (isalpha(curr))
+					tokens.push_back(Token{ TokenType::Variable, curr_s });
+
 				else throw std::invalid_argument("Unidentified token: " + curr_s);
 			}
 
