@@ -31,4 +31,28 @@ namespace InterpreterTest
     {
         EXPECT_THROW(Lexa::Interpreter::Tokenise("aod2c/*`=02@#-=\"!£^*&\`\"\"£&*\"(%%)!\""), std::invalid_argument);
     }
+
+
+    TEST(TestLexer, TestTokeniseParen)
+    {
+        std::vector<Tok> actual;
+        EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("(4 - 3)^3/(1 + 3)"));
+        std::vector<Tok> expected = {
+            Tok{Type::LeftBracket, "("},
+            Tok{Type::Number, "4"},
+            Tok{Type::Number, "-"},
+            Tok{Type::Number, "3"},
+            Tok{Type::RightBracket, ")"},
+            Tok{Type::Operation, "^"},
+            Tok{Type::Number, "3"},
+            Tok{Type::Operation, "/"},
+            Tok{Type::LeftBracket, "("},
+            Tok{Type::Number, "1"},
+            Tok{Type::Number, "+"},
+            Tok{Type::Number, "3"},
+            Tok{Type::RightBracket, ")"},
+        };
+
+        EXPECT_EQ(expected, actual);
+    }
 }

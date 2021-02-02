@@ -10,6 +10,8 @@ namespace Lexa
 		{
 			Number,
 			Operation,
+			LeftBracket,
+			RightBracket,
 		};
 
 
