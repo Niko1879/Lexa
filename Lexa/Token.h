@@ -39,6 +39,8 @@ namespace Lexa
 		{
 			{TokenType::Number, "Number"},
 			{TokenType::Operation, "Operation"},
+			{TokenType::LeftBracket, "LeftBracket"},
+			{TokenType::RightBracket, "RightBracket"},
 		};
 
 

@@ -40,7 +40,7 @@ namespace InterpreterTest
         std::vector<Tok> expected = {
             Tok{Type::LeftBracket, "("},
             Tok{Type::Number, "4"},
-            Tok{Type::Number, "-"},
+            Tok{Type::Operation, "-"},
             Tok{Type::Number, "3"},
             Tok{Type::RightBracket, ")"},
             Tok{Type::Operation, "^"},
@@ -48,7 +48,7 @@ namespace InterpreterTest
             Tok{Type::Operation, "/"},
             Tok{Type::LeftBracket, "("},
             Tok{Type::Number, "1"},
-            Tok{Type::Number, "+"},
+            Tok{Type::Operation, "+"},
             Tok{Type::Number, "3"},
             Tok{Type::RightBracket, ")"},
         };

@@ -27,11 +27,17 @@ namespace Lexa
 					numbuf.clear();
 				}
 
+				if (isspace(curr))
+					continue;
+
 				if (Operations.find(curr_s) != Operations.end())
 					tokens.push_back(Token{ TokenType::Operation, curr_s });
 
-				else if (isspace(curr))
-					continue;
+				else if (curr == '(')
+					tokens.push_back(Token{ TokenType::LeftBracket, curr_s });
+
+				else if (curr == ')')
+					tokens.push_back(Token{ TokenType::RightBracket, curr_s });
 
 				else throw std::invalid_argument("Unidentified token: " + curr_s);
 			}
