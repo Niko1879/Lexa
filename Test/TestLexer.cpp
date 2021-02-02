@@ -27,6 +27,28 @@ namespace InterpreterTest
     }
 
 
+    TEST(TestLexer, TestTokenise2)
+    {
+        std::vector<Tok> actual;
+        EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("1111 + 1234 -222*333/ 401^2"));
+        std::vector<Tok> expected = {
+            Tok{Type::Number, "1111"},
+            Tok{Type::BinaryOperation, "+"},
+            Tok{Type::Number, "1234"},
+            Tok{Type::BinaryOperation, "-"},
+            Tok{Type::Number, "222"},
+            Tok{Type::BinaryOperation, "*"},
+            Tok{Type::Number, "333"},
+            Tok{Type::BinaryOperation, "/"},
+            Tok{Type::Number, "401"},
+            Tok{Type::BinaryOperation, "^"},
+            Tok{Type::Number, "2"},
+        };
+
+        EXPECT_EQ(expected, actual);
+    }
+
+
     TEST(TestLexer, TestTokeniseThrowsOnInvalid)
     {
         EXPECT_THROW(Lexa::Interpreter::Tokenise("aod2c/*`=02@#-=\"!£^*&\`\"\"£&*\"(%%)!\""), std::invalid_argument);
