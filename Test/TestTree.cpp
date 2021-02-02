@@ -39,4 +39,59 @@ namespace InterpreterTest
 		EXPECT_EQ(l.Data(), c1);
 		EXPECT_EQ(r.Data(), c2);
 	}
+
+
+	TEST(TestTree, TestEqualityTrue)
+	{
+		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r1));
+
+		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+
+		EXPECT_TRUE(t1 == t2);
+	}
+
+
+	TEST(TestTree, TestEqualityFalse1)
+	{
+		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r1));
+
+		Lexa::Tree<Tok> l2(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> r2(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+
+		EXPECT_FALSE(t1 == t2);
+	}
+
+
+	TEST(TestTree, TestEqualityFalse2)
+	{
+		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "-" }, std::move(l1), std::move(r1));
+
+		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+
+		EXPECT_FALSE(t1 == t2);
+	}
+
+
+	TEST(TestTree, TestEqualityFalse3)
+	{
+		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), true);
+
+		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
+		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r2));
+
+		EXPECT_FALSE(t1 == t2);
+	}
 }
