@@ -4,6 +4,27 @@ namespace Lexa
 {
 	namespace Interpreter
 	{		
+		std::vector<Token> _TokeniseChars(std::stringstream& charbuf, std::vector<Token>& tokens)
+		{
+			std::string chars = charbuf.str();
+			charbuf.str("");
+			charbuf.clear();
+			if (StrToFunction.find(chars) != StrToFunction.end())
+				tokens.push_back(Token{ TokenType::Function, chars });
+
+			else if (StrToMathConstant.find(chars) != StrToMathConstant.end())
+				tokens.push_back(Token{ TokenType::MathConstant, chars });
+
+			else
+			{
+				for (char c : chars)
+					tokens.push_back(Token{ TokenType::Variable, std::string(1, c) });
+			}
+
+			return tokens;
+		}
+		
+		
 		std::vector<Token> Tokenise(const std::string& expression)
 		{
 			std::vector<Token> tokens;
@@ -36,18 +57,7 @@ namespace Lexa
 
 				if (charbuf.str().size() > 0)
 				{
-					std::string chars = charbuf.str();
-					charbuf.str("");
-					charbuf.clear();
-
-					if (StrToFunction.find(chars) != StrToFunction.end())
-						tokens.push_back(Token{ TokenType::Function, chars });
-
-					else
-					{
-						for (char c: chars)
-							tokens.push_back(Token{ TokenType::Variable, std::string(1, c) });
-					}
+					_TokeniseChars(charbuf, tokens);
 				}
 
 				if (isspace(curr))
@@ -67,6 +77,9 @@ namespace Lexa
 
 			if (numbuf.str().size() > 0)
 				tokens.push_back(Token{ TokenType::Number, numbuf.str() });
+
+			else if (charbuf.str().size() > 0)
+				_TokeniseChars(charbuf, tokens);
 
 			return tokens;
 		}

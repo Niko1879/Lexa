@@ -14,6 +14,7 @@ namespace Lexa
 			RightBracket,
 			Variable,
 			Function,
+			MathConstant,
 		};
 
 
@@ -55,6 +56,24 @@ namespace Lexa
 			Arsech,
 			Arcosech,
 			Arcoth,
+		};
+
+
+		enum class MathConstant
+		{
+			E,
+			Pi,
+		};
+
+
+		const std::unordered_map<TokenType, std::string> StrToTokenType
+		{
+			{TokenType::Number, "Number"},
+			{TokenType::BinaryOperation, "BinaryOperation"},
+			{TokenType::LeftBracket, "LeftBracket"},
+			{TokenType::RightBracket, "RightBracket"},
+			{TokenType::Variable, "Variable"},
+			{TokenType::Function, "Function"},
 		};
 
 
@@ -100,14 +119,10 @@ namespace Lexa
 		};
 
 
-		const std::unordered_map<TokenType, std::string> StrToTokenType
+		const std::unordered_map<std::string, MathConstant> StrToMathConstant
 		{
-			{TokenType::Number, "Number"},
-			{TokenType::BinaryOperation, "BinaryOperation"},
-			{TokenType::LeftBracket, "LeftBracket"},
-			{TokenType::RightBracket, "RightBracket"},
-			{TokenType::Variable, "Variable"},
-			{TokenType::Function, "Function"},
+			{"e", MathConstant::E},
+			{"pi", MathConstant::Pi},
 		};
 
 

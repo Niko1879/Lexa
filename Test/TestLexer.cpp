@@ -94,6 +94,22 @@ namespace InterpreterTest
     }
 
 
+    TEST(TestLexer, TestTokeniseMathConstant)
+    {
+        std::vector<Tok> actual;
+        EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("e^x + pi"));
+        std::vector<Tok> expected = {
+            Tok{Type::MathConstant, "e"},
+            Tok{Type::BinaryOperation, "^"},
+            Tok{Type::Variable, "x"},
+            Tok{Type::BinaryOperation, "+"},
+            Tok{Type::MathConstant, "pi"},
+        };
+
+        EXPECT_EQ(expected, actual);
+    }
+
+
     TEST(TestLexer, TestCaseSensitivity)
     {
         std::vector<Tok> actual;
