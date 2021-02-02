@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "InterpreterTestDefs.h"
-#include "Tree.h"
 
 
 namespace InterpreterTest
@@ -9,9 +8,9 @@ namespace InterpreterTest
 	{
 		Tok t{ Type::Number, "1" };
 		EXPECT_NO_THROW(
-			Lexa::Tree<Tok> left(Tok{ Type::Number, "1" });
-			Lexa::Tree<Tok> right(t);
-			Lexa::Tree<Tok> root(Tok{Type::BinaryOperation, "+"}, std::move(left), std::move(right));
+			PTree left(Tok{ Type::Number, "1" });
+			PTree right(t);
+			PTree root(Tok{Type::BinaryOperation, "+"}, std::move(left), std::move(right));
 		);
 	}
 
@@ -19,7 +18,7 @@ namespace InterpreterTest
 	{
 		Tok t{ Type::Number, "1" };
 		Tok u{ Type::Number, "1" };
-		Lexa::Tree<Tok> root(t);
+		PTree root(t);
 		EXPECT_EQ(root.Data(), t);
 		root.Data() = u;
 		EXPECT_EQ(root.Data(), u);
@@ -28,12 +27,12 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestGetChild)
 	{
-		Lexa::Tree<Tok> left(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> right(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "+" }, std::move(left), std::move(right));
+		PTree left(Tok{ Type::Number, "1" });
+		PTree right(Tok{ Type::Number, "2" });
+		PTree root(Tok{ Type::BinaryOperation, "+" }, std::move(left), std::move(right));
 
-		Lexa::Tree<Tok>& l = root.Left();
-		Lexa::Tree<Tok>& r = root.Right();
+		PTree& l = root.Left();
+		PTree& r = root.Right();
 
 		Tok c1{ Type::Number, "1" };
 		Tok c2{ Type::Number, "2" };
@@ -44,13 +43,13 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityTrue)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree r1(Tok{ Type::Number, "2" });
+		PTree t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
+		PTree l2(Tok{ Type::Number, "1" });
+		PTree r2(Tok{ Type::Number, "2" });
+		PTree t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
 
 		EXPECT_TRUE(t1 == t2);
 	}
@@ -58,13 +57,13 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityFalse1)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree r1(Tok{ Type::Number, "2" });
+		PTree t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
+		PTree l2(Tok{ Type::Number, "2" });
+		PTree r2(Tok{ Type::Number, "1" });
+		PTree t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
 
 		EXPECT_FALSE(t1 == t2);
 	}
@@ -72,13 +71,13 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityFalse2)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "-" }, std::move(l1), std::move(r1));
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree r1(Tok{ Type::Number, "2" });
+		PTree t1(Tok{ Type::BinaryOperation, "-" }, std::move(l1), std::move(r1));
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
+		PTree l2(Tok{ Type::Number, "1" });
+		PTree r2(Tok{ Type::Number, "2" });
+		PTree t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
 
 		EXPECT_FALSE(t1 == t2);
 	}
@@ -86,12 +85,12 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityFalse3)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), true);
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), true);
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r2));
+		PTree l2(Tok{ Type::Number, "1" });
+		PTree r2(Tok{ Type::Number, "2" });
+		PTree t2(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r2));
 
 		EXPECT_FALSE(t1 == t2);
 	}

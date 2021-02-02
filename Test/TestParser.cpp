@@ -19,15 +19,15 @@ namespace InterpreterTest
 			Tok{Type::Number, "4"},
 		};
 
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "3" });
-		Lexa::Tree<Tok> p1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(l2));
-		Lexa::Tree<Tok> l3(Tok{ Type::Number, "5" });
-		Lexa::Tree<Tok> l4(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> l5(Tok{ Type::Number, "4" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "^" }, std::move(l3), std::move(l4));
-		Lexa::Tree<Tok> p2(Tok{ Type::BinaryOperation, "/" }, std::move(t1), std::move(l5));
-		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "-" }, std::move(p1), std::move(p2));
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree l2(Tok{ Type::Number, "3" });
+		PTree p1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(l2));
+		PTree l3(Tok{ Type::Number, "5" });
+		PTree l4(Tok{ Type::Number, "2" });
+		PTree l5(Tok{ Type::Number, "4" });
+		PTree t1(Tok{ Type::BinaryOperation, "^" }, std::move(l3), std::move(l4));
+		PTree p2(Tok{ Type::BinaryOperation, "/" }, std::move(t1), std::move(l5));
+		PTree root(Tok{ Type::BinaryOperation, "-" }, std::move(p1), std::move(p2));
 
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
@@ -52,16 +52,16 @@ namespace InterpreterTest
 		   Tok{Type::RightBracket, ")"},
 		};
 
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "4" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "3" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "-" }, std::move(l1), std::move(r1));
-		Lexa::Tree<Tok> t2(Tok{ Type::Number, "3" });
-		Lexa::Tree<Tok> p1(Tok{ Type::BinaryOperation, "^" }, std::move(t1), std::move(t2));
+		PTree l1(Tok{ Type::Number, "4" });
+		PTree r1(Tok{ Type::Number, "3" });
+		PTree t1(Tok{ Type::BinaryOperation, "-" }, std::move(l1), std::move(r1));
+		PTree t2(Tok{ Type::Number, "3" });
+		PTree p1(Tok{ Type::BinaryOperation, "^" }, std::move(t1), std::move(t2));
 		
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "3" });
-		Lexa::Tree<Tok> p2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
-		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "/" }, std::move(p1), std::move(p2));
+		PTree l2(Tok{ Type::Number, "1" });
+		PTree r2(Tok{ Type::Number, "3" });
+		PTree p2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
+		PTree root(Tok{ Type::BinaryOperation, "/" }, std::move(p1), std::move(p2));
 
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
@@ -82,16 +82,16 @@ namespace InterpreterTest
 			Tok{Type::Number, "3"},
 		};
 
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Variable, "x" });
-		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "*" }, std::move(l1), std::move(r1));
-		Lexa::Tree<Tok> t2(Tok{ Type::Number, "4" });
-		Lexa::Tree<Tok> p1(Tok{ Type::BinaryOperation, "+" }, std::move(t1), std::move(t2));
+		PTree l1(Tok{ Type::Number, "2" });
+		PTree r1(Tok{ Type::Variable, "x" });
+		PTree t1(Tok{ Type::BinaryOperation, "*" }, std::move(l1), std::move(r1));
+		PTree t2(Tok{ Type::Number, "4" });
+		PTree p1(Tok{ Type::BinaryOperation, "+" }, std::move(t1), std::move(t2));
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Variable, "y" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "3" });
-		Lexa::Tree<Tok> p2(Tok{ Type::BinaryOperation, "^" }, std::move(l2), std::move(r2));
-		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "-" }, std::move(p1), std::move(p2));
+		PTree l2(Tok{ Type::Variable, "y" });
+		PTree r2(Tok{ Type::Number, "3" });
+		PTree p2(Tok{ Type::BinaryOperation, "^" }, std::move(l2), std::move(r2));
+		PTree root(Tok{ Type::BinaryOperation, "-" }, std::move(p1), std::move(p2));
 
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
@@ -114,14 +114,14 @@ namespace InterpreterTest
 			Tok{Type::RightBracket, ")"},
 		};
 
-		Lexa::Tree<Tok> arg1(Tok{ Type::Variable, "x" });
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "3" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Function, "cos" }, std::move(arg1), true);
-		Lexa::Tree<Tok> p1(Tok{ Type::BinaryOperation, "*" }, std::move(l1), std::move(r1));
+		PTree arg1(Tok{ Type::Variable, "x" });
+		PTree l1(Tok{ Type::Number, "3" });
+		PTree r1(Tok{ Type::Function, "cos" }, std::move(arg1), true);
+		PTree p1(Tok{ Type::BinaryOperation, "*" }, std::move(l1), std::move(r1));
 
-		Lexa::Tree<Tok> arg2(Tok{ Type::Variable, "y" });
-		Lexa::Tree<Tok> p2(Tok{ Type::Function, "sin" }, std::move(arg2), true);
-		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "+" }, std::move(p1), std::move(p2));
+		PTree arg2(Tok{ Type::Variable, "y" });
+		PTree p2(Tok{ Type::Function, "sin" }, std::move(arg2), true);
+		PTree root(Tok{ Type::BinaryOperation, "+" }, std::move(p1), std::move(p2));
 
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
@@ -138,11 +138,11 @@ namespace InterpreterTest
 			Tok{Type::MathConstant, "pi"},
 		};
 
-		Lexa::Tree<Tok> l1(Tok{ Type::MathConstant, "e" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Variable, "x" });
-		Lexa::Tree<Tok> p1(Tok{ Type::BinaryOperation, "^" }, std::move(l1), std::move(r1));
-		Lexa::Tree<Tok> p2(Tok{ Type::MathConstant, "pi" });
-		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "+" }, std::move(p1), std::move(p2));
+		PTree l1(Tok{ Type::MathConstant, "e" });
+		PTree r1(Tok{ Type::Variable, "x" });
+		PTree p1(Tok{ Type::BinaryOperation, "^" }, std::move(l1), std::move(r1));
+		PTree p2(Tok{ Type::MathConstant, "pi" });
+		PTree root(Tok{ Type::BinaryOperation, "+" }, std::move(p1), std::move(p2));
 
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
