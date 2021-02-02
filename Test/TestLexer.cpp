@@ -49,6 +49,19 @@ namespace InterpreterTest
     }
 
 
+    TEST(TestLexer, TestTokeniseNegativeNumbers)
+    {
+        std::vector<Tok> actual;
+        EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("-1"));
+        std::vector<Tok> expected = {
+            Tok{Type::BinaryOperation, "-"},
+            Tok{Type::Number, "1"},
+        };
+
+        EXPECT_EQ(expected, actual);
+    }
+
+
     TEST(TestLexer, TestTokeniseThrowsOnInvalid)
     {
         EXPECT_THROW(Lexa::Interpreter::Tokenise("aod2c/*`=02@#-=\"!£^*&\`\"\"£&*\"(%%)!\""), std::invalid_argument);
