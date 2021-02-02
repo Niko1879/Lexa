@@ -26,6 +26,7 @@ namespace Lexa
 				switch (t.type)
 				{
 				case TokenType::Number:
+				case TokenType::Variable:
 					partialTrees.emplace_back(t);
 					break;
 

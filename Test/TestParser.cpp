@@ -66,4 +66,34 @@ namespace InterpreterTest
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
 	}
+
+
+	TEST(TestParser, TestParseVariable)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::Number, "2"},
+			Tok{Type::Operation, "*"},
+			Tok{Type::Variable, "x"},
+			Tok{Type::Operation, "+"},
+			Tok{Type::Number, "4"},
+			Tok{Type::Operation, "-"},
+			Tok{Type::Variable, "y"},
+			Tok{Type::Operation, "^"},
+			Tok{Type::Number, "3"},
+		};
+
+		Lexa::Tree<Tok> l1(Tok{ Type::Number, "2" });
+		Lexa::Tree<Tok> r1(Tok{ Type::Variable, "x" });
+		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "*" }, std::move(l1), std::move(r1));
+		Lexa::Tree<Tok> t2(Tok{ Type::Number, "4" });
+		Lexa::Tree<Tok> p1(Tok{ Type::Operation, "+" }, std::move(t1), std::move(t2));
+
+		Lexa::Tree<Tok> l2(Tok{ Type::Variable, "y" });
+		Lexa::Tree<Tok> r2(Tok{ Type::Number, "3" });
+		Lexa::Tree<Tok> p2(Tok{ Type::Operation, "^" }, std::move(l2), std::move(r2));
+		Lexa::Tree<Tok> root(Tok{ Type::Operation, "-" }, std::move(p1), std::move(p2));
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
 }
