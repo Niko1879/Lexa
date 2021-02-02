@@ -5,9 +5,6 @@
 
 namespace InterpreterTest
 {
-    using Tok = Lexa::Interpreter::Token;
-    using Type = Lexa::Interpreter::TokenType;
-
     TEST(TestLexer, TestTokenise)
     {
         std::vector<Tok> actual;
