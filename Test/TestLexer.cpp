@@ -61,13 +61,6 @@ namespace InterpreterTest
         EXPECT_EQ(expected, actual);
     }
 
-
-    TEST(TestLexer, TestTokeniseThrowsOnInvalid)
-    {
-        EXPECT_THROW(Lexa::Interpreter::Tokenise("aod2c/*`=02@#-=\"!£^*&\`\"\"£&*\"(%%)!\""), std::invalid_argument);
-    }
-
-
     TEST(TestLexer, TestTokeniseParen)
     {
         std::vector<Tok> actual;
@@ -161,5 +154,11 @@ namespace InterpreterTest
         };
 
         EXPECT_EQ(expected, actual);
+    }
+
+
+    TEST(TestLexer, TestTokeniseThrowsOnInvalid)
+    {
+        EXPECT_THROW(Lexa::Interpreter::Tokenise("aod2c/*`=02@#-=\"!£^*&\`\"\"£&*\"(%%)!\""), std::invalid_argument);
     }
 }
