@@ -75,4 +75,23 @@ namespace InterpreterTest
 
         EXPECT_EQ(expected, actual);
     }
+
+
+    TEST(TestLexer, TestTokeniseFunction)
+    {
+        for (auto p : Lexa::Interpreter::Functions)
+        {
+            std::vector<Tok> actual = Lexa::Interpreter::Tokenise(p.first + ("(x)"));
+            std::vector<Tok> expected = {
+                Tok{Type::Function, p.first},
+                Tok{Type::LeftBracket, "("},
+                Tok{Type::Variable, "x"},
+                Tok{Type::RightBracket, ")"}
+            };
+
+            EXPECT_EQ(expected, actual);
+        }
+
+       
+    }
 }
