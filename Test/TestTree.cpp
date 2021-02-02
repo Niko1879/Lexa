@@ -11,7 +11,7 @@ namespace InterpreterTest
 		EXPECT_NO_THROW(
 			Lexa::Tree<Tok> left(Tok{ Type::Number, "1" });
 			Lexa::Tree<Tok> right(t);
-			Lexa::Tree<Tok> root(Tok{Type::Operation, "+"}, std::move(left), std::move(right));
+			Lexa::Tree<Tok> root(Tok{Type::BinaryOperation, "+"}, std::move(left), std::move(right));
 		);
 	}
 
@@ -30,7 +30,7 @@ namespace InterpreterTest
 	{
 		Lexa::Tree<Tok> left(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> right(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> root(Tok{ Type::Operation, "+" }, std::move(left), std::move(right));
+		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "+" }, std::move(left), std::move(right));
 
 		Lexa::Tree<Tok>& l = root.Left();
 		Lexa::Tree<Tok>& r = root.Right();
@@ -46,11 +46,11 @@ namespace InterpreterTest
 	{
 		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r1));
+		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
 
 		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
 
 		EXPECT_TRUE(t1 == t2);
 	}
@@ -60,11 +60,11 @@ namespace InterpreterTest
 	{
 		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r1));
+		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
 
 		Lexa::Tree<Tok> l2(Tok{ Type::Number, "2" });
 		Lexa::Tree<Tok> r2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
 
 		EXPECT_FALSE(t1 == t2);
 	}
@@ -74,11 +74,11 @@ namespace InterpreterTest
 	{
 		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "-" }, std::move(l1), std::move(r1));
+		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "-" }, std::move(l1), std::move(r1));
 
 		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l2), std::move(r2));
 
 		EXPECT_FALSE(t1 == t2);
 	}
@@ -87,11 +87,11 @@ namespace InterpreterTest
 	TEST(TestTree, TestEqualityFalse3)
 	{
 		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), true);
+		Lexa::Tree<Tok> t1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), true);
 
 		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
 		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r2));
+		Lexa::Tree<Tok> t2(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r2));
 
 		EXPECT_FALSE(t1 == t2);
 	}

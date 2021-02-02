@@ -11,15 +11,15 @@ namespace InterpreterTest
         EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("1 + 1 -2*3/ 4^2"));
         std::vector<Tok> expected = {
             Tok{Type::Number, "1"},
-            Tok{Type::Operation, "+"},
+            Tok{Type::BinaryOperation, "+"},
             Tok{Type::Number, "1"},
-            Tok{Type::Operation, "-"},
+            Tok{Type::BinaryOperation, "-"},
             Tok{Type::Number, "2"},
-            Tok{Type::Operation, "*"},
+            Tok{Type::BinaryOperation, "*"},
             Tok{Type::Number, "3"},
-            Tok{Type::Operation, "/"},
+            Tok{Type::BinaryOperation, "/"},
             Tok{Type::Number, "4"},
-            Tok{Type::Operation, "^"},
+            Tok{Type::BinaryOperation, "^"},
             Tok{Type::Number, "2"},
         };
 
@@ -40,15 +40,15 @@ namespace InterpreterTest
         std::vector<Tok> expected = {
             Tok{Type::LeftBracket, "("},
             Tok{Type::Number, "4"},
-            Tok{Type::Operation, "-"},
+            Tok{Type::BinaryOperation, "-"},
             Tok{Type::Number, "3"},
             Tok{Type::RightBracket, ")"},
-            Tok{Type::Operation, "^"},
+            Tok{Type::BinaryOperation, "^"},
             Tok{Type::Number, "3"},
-            Tok{Type::Operation, "/"},
+            Tok{Type::BinaryOperation, "/"},
             Tok{Type::LeftBracket, "("},
             Tok{Type::Number, "1"},
-            Tok{Type::Operation, "+"},
+            Tok{Type::BinaryOperation, "+"},
             Tok{Type::Number, "3"},
             Tok{Type::RightBracket, ")"},
         };
@@ -63,13 +63,13 @@ namespace InterpreterTest
         EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("2*x + 4 - y^3"));
         std::vector<Tok> expected = {
             Tok{Type::Number, "2"},
-            Tok{Type::Operation, "*"},
+            Tok{Type::BinaryOperation, "*"},
             Tok{Type::Variable, "x"},
-            Tok{Type::Operation, "+"},
+            Tok{Type::BinaryOperation, "+"},
             Tok{Type::Number, "4"},
-            Tok{Type::Operation, "-"},
+            Tok{Type::BinaryOperation, "-"},
             Tok{Type::Variable, "y"},
-            Tok{Type::Operation, "^"},
+            Tok{Type::BinaryOperation, "^"},
             Tok{Type::Number, "3"},
         };
 

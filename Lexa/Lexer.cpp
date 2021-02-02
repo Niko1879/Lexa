@@ -53,8 +53,8 @@ namespace Lexa
 				if (isspace(curr))
 					continue;
 
-				if (StrToOperation.find(curr_s) != StrToOperation.end())
-					tokens.push_back(Token{ TokenType::Operation, curr_s });
+				if (StrToBinaryOperation.find(curr_s) != StrToBinaryOperation.end())
+					tokens.push_back(Token{ TokenType::BinaryOperation, curr_s });
 
 				else if (curr == '(')
 					tokens.push_back(Token{ TokenType::LeftBracket, curr_s });

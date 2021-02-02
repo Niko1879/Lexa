@@ -7,7 +7,7 @@ namespace Lexa
 	{
 		void _Pop(std::vector<ParseTree>& pTrees, std::vector<Token>& stack)
 		{
-			if (stack.back().type == TokenType::Operation)
+			if (stack.back().type == TokenType::BinaryOperation)
 			{
 				ParseTree left(std::move(pTrees[pTrees.size() - 2]));
 				ParseTree right(std::move(pTrees[pTrees.size() - 1]));
@@ -45,12 +45,12 @@ namespace Lexa
 					stack.push_back(t);
 					break;
 
-				case TokenType::Operation:
+				case TokenType::BinaryOperation:
 
 					while (stack.size() > 0 && 
 						   stack.back().type != TokenType::LeftBracket &&
-						   OperatorPrecedence.at(StrToOperation.at(stack.back().value)) >= 
-						   OperatorPrecedence.at(StrToOperation.at(t.value)))
+						   OperatorPrecedence.at(StrToBinaryOperation.at(stack.back().value)) >=
+						   OperatorPrecedence.at(StrToBinaryOperation.at(t.value)))
 					{
 						_Pop(partialTrees, stack);
 					}

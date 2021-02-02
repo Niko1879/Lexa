@@ -9,7 +9,7 @@ namespace Lexa
 		enum class TokenType
 		{
 			Number,
-			Operation,
+			BinaryOperation,
 			LeftBracket,
 			RightBracket,
 			Variable,
@@ -17,7 +17,7 @@ namespace Lexa
 		};
 
 
-		enum class Operation
+		enum class BinaryOperation
 		{
 			Plus,
 			Minus,
@@ -58,13 +58,13 @@ namespace Lexa
 		};
 
 
-		const std::unordered_map<std::string, Operation> StrToOperation
+		const std::unordered_map<std::string, BinaryOperation> StrToBinaryOperation
 		{
-			{"+", Operation::Plus},
-			{"-", Operation::Minus},
-			{"*", Operation::Times},
-			{"/", Operation::Divide},
-			{"^", Operation::Raise},
+			{"+", BinaryOperation::Plus},
+			{"-", BinaryOperation::Minus},
+			{"*", BinaryOperation::Times},
+			{"/", BinaryOperation::Divide},
+			{"^", BinaryOperation::Raise},
 		};
 
 
@@ -103,7 +103,7 @@ namespace Lexa
 		const std::unordered_map<TokenType, std::string> StrToTokenType
 		{
 			{TokenType::Number, "Number"},
-			{TokenType::Operation, "Operation"},
+			{TokenType::BinaryOperation, "BinaryOperation"},
 			{TokenType::LeftBracket, "LeftBracket"},
 			{TokenType::RightBracket, "RightBracket"},
 			{TokenType::Variable, "Variable"},
@@ -111,13 +111,13 @@ namespace Lexa
 		};
 
 
-		const std::unordered_map<Operation, int> OperatorPrecedence
+		const std::unordered_map<BinaryOperation, int> OperatorPrecedence
 		{
-			{Operation::Plus, 0},
-			{Operation::Minus, 0},
-			{Operation::Times, 1},
-			{Operation::Divide, 1},
-			{Operation::Raise, 2},
+			{BinaryOperation::Plus, 0},
+			{BinaryOperation::Minus, 0},
+			{BinaryOperation::Times, 1},
+			{BinaryOperation::Divide, 1},
+			{BinaryOperation::Raise, 2},
 		};
 	}
 }
