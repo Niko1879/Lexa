@@ -126,4 +126,25 @@ namespace InterpreterTest
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
 	}
+
+
+	TEST(TestParser, TestParseMathConstant)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::MathConstant, "e"},
+			Tok{Type::BinaryOperation, "^"},
+			Tok{Type::Variable, "x"},
+			Tok{Type::BinaryOperation, "+"},
+			Tok{Type::MathConstant, "pi"},
+		};
+
+		Lexa::Tree<Tok> l1(Tok{ Type::MathConstant, "e" });
+		Lexa::Tree<Tok> r1(Tok{ Type::Variable, "x" });
+		Lexa::Tree<Tok> p1(Tok{ Type::BinaryOperation, "^" }, std::move(l1), std::move(r1));
+		Lexa::Tree<Tok> p2(Tok{ Type::MathConstant, "pi" });
+		Lexa::Tree<Tok> root(Tok{ Type::BinaryOperation, "+" }, std::move(p1), std::move(p2));
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
 }

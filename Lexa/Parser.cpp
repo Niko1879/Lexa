@@ -38,6 +38,7 @@ namespace Lexa
 				{
 				case TokenType::Number:
 				case TokenType::Variable:
+				case TokenType::MathConstant:
 					partialTrees.emplace_back(t);
 					break;
 
