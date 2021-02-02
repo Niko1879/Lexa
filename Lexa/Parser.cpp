@@ -31,7 +31,10 @@ namespace Lexa
 
 				case TokenType::Operation:
 
-					while (stack.size() > 0 && OperatorPrecedence.at(Operations.at(stack.back().value)) >= OperatorPrecedence.at(Operations.at(t.value)))
+					while (stack.size() > 0 && 
+						   stack.back().type != TokenType::LeftBracket &&
+						   OperatorPrecedence.at(Operations.at(stack.back().value)) >= 
+						   OperatorPrecedence.at(Operations.at(t.value)))
 					{
 						_Pop(partialTrees, stack);
 					}
@@ -39,6 +42,17 @@ namespace Lexa
 					stack.push_back(t);
 					break;
 
+				case TokenType::LeftBracket:
+					stack.push_back(t);
+					break;
+
+				case TokenType::RightBracket:
+					while (stack.size() > 0 && stack.back().type != TokenType::LeftBracket)
+					{
+						_Pop(partialTrees, stack);
+					}
+					if (stack.size() > 0) stack.pop_back();
+					break;
 
 				default:
 					throw std::invalid_argument("Could not parse expression");
