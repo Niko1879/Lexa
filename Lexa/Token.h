@@ -13,6 +13,26 @@ namespace Lexa
 		};
 
 
+		enum class Operation
+		{
+			Plus,
+			Minus,
+			Times,
+			Divide,
+			Raise,
+		};
+
+
+		const std::unordered_map<std::string, Operation> Operations
+		{
+			{"+", Operation::Plus},
+			{"-", Operation::Minus},
+			{"*", Operation::Times},
+			{"/", Operation::Divide},
+			{"^", Operation::Raise},
+		};
+
+
 		const std::unordered_map<TokenType, std::string> TokenTypeStr
 		{
 			{TokenType::Number, "Number"},
