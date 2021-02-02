@@ -12,7 +12,7 @@ namespace Lexa
 			std::stringstream charbuf;
 			for (size_t i = 0; i < expression.size(); ++i)
 			{
-				char curr = expression[i];
+				char curr = tolower(expression[i]);
 				std::string curr_s = std::string(1, curr);
 				
 				if (isdigit(curr))

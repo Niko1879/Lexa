@@ -91,7 +91,24 @@ namespace InterpreterTest
 
             EXPECT_EQ(expected, actual);
         }
+    }
 
-       
+
+    TEST(TestLexer, TestCaseSensitivity)
+    {
+        std::vector<Tok> actual;
+        EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("SiN(x)coS(x)"));
+        std::vector<Tok> expected = {
+            Tok{Type::Function, "sin"},
+            Tok{Type::LeftBracket, "("},
+            Tok{Type::Variable, "x"},
+            Tok{Type::RightBracket, ")"},
+            Tok{Type::Function, "cos"},
+             Tok{Type::LeftBracket, "("},
+            Tok{Type::Variable, "x"},
+            Tok{Type::RightBracket, ")"},
+        };
+
+        EXPECT_EQ(expected, actual);
     }
 }
