@@ -34,8 +34,8 @@ namespace Lexa
 
 					while (stack.size() > 0 && 
 						   stack.back().type != TokenType::LeftBracket &&
-						   OperatorPrecedence.at(Operations.at(stack.back().value)) >= 
-						   OperatorPrecedence.at(Operations.at(t.value)))
+						   OperatorPrecedence.at(StrToOperation.at(stack.back().value)) >= 
+						   OperatorPrecedence.at(StrToOperation.at(t.value)))
 					{
 						_Pop(partialTrees, stack);
 					}

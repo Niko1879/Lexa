@@ -79,7 +79,7 @@ namespace InterpreterTest
 
     TEST(TestLexer, TestTokeniseFunction)
     {
-        for (auto p : Lexa::Interpreter::Functions)
+        for (auto p : Lexa::Interpreter::StrToFunction)
         {
             std::vector<Tok> actual = Lexa::Interpreter::Tokenise(p.first + ("(x)"));
             std::vector<Tok> expected = {

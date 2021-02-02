@@ -40,7 +40,7 @@ namespace Lexa
 					charbuf.str("");
 					charbuf.clear();
 
-					if (Functions.find(chars) != Functions.end())
+					if (StrToFunction.find(chars) != StrToFunction.end())
 						tokens.push_back(Token{ TokenType::Function, chars });
 
 					else
@@ -53,7 +53,7 @@ namespace Lexa
 				if (isspace(curr))
 					continue;
 
-				if (Operations.find(curr_s) != Operations.end())
+				if (StrToOperation.find(curr_s) != StrToOperation.end())
 					tokens.push_back(Token{ TokenType::Operation, curr_s });
 
 				else if (curr == '(')

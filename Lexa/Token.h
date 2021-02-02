@@ -58,7 +58,7 @@ namespace Lexa
 		};
 
 
-		const std::unordered_map<std::string, Operation> Operations
+		const std::unordered_map<std::string, Operation> StrToOperation
 		{
 			{"+", Operation::Plus},
 			{"-", Operation::Minus},
@@ -68,7 +68,7 @@ namespace Lexa
 		};
 
 
-		const std::unordered_map<std::string, Function> Functions
+		const std::unordered_map<std::string, Function> StrToFunction
 		{
 			{"exp", Function::Exp},
 			{"log", Function::Log},
@@ -100,7 +100,7 @@ namespace Lexa
 		};
 
 
-		const std::unordered_map<TokenType, std::string> TokenTypeStr
+		const std::unordered_map<TokenType, std::string> StrToTokenType
 		{
 			{TokenType::Number, "Number"},
 			{TokenType::Operation, "Operation"},
