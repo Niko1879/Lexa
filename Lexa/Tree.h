@@ -106,6 +106,7 @@ namespace Lexa
 		}
 	};
 
+
 	template<class T>
 	bool operator==(const Tree<T>& t1, const Tree<T>& t2)
 	{
@@ -118,5 +119,15 @@ namespace Lexa
 		if (equal && t1.HasLeft()) equal = t1.Left() == t2.Left();
 		if (equal && t1.HasRight()) equal = t1.Right() == t2.Right();
 		return equal;
+	}
+
+
+	template<class T>
+	std::ostream& operator<<(std::ostream& stream, const Tree<T>& tree)
+	{
+		stream << tree.Data() << std::endl;
+		if (tree.HasLeft()) stream << "L:" << tree.Left();
+		if (tree.HasRight()) stream << "R:" << tree.Right();
+		return stream;
 	}
 }
