@@ -149,6 +149,50 @@ namespace InterpreterTest
 	}
 
 
+	TEST(TestParser, TestNegativeNumbers)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::BinaryOperation, "-"},
+			Tok{Type::Number, "1"},
+			Tok{Type::BinaryOperation, "^"},
+			Tok{Type::Number, "2"},
+		};
+
+		PTree p1(Tok{ Type::Number, "-1" });
+		PTree p2(Tok{ Type::Number, "2" });
+		PTree root(Tok{ Type::BinaryOperation, "^" }, std::move(p1), std::move(p2));
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
+
+
+	TEST(TestParser, TestNegativeNumbers2)
+	{
+		std::vector<Tok> tokens = {
+			Tok{Type::BinaryOperation, "-"},
+			Tok{Type::LeftBracket, "("},
+			Tok{Type::Number, "1"},
+			Tok{Type::BinaryOperation, "+"},
+			Tok{Type::Number, "3"},
+			Tok{Type::RightBracket, ")"},
+			Tok{Type::BinaryOperation, "^"},
+			Tok{Type::Number, "2"},
+		};
+
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree r1(Tok{ Type::Number, "3" });
+		PTree p1(Tok{ Type::BinaryOperation, "+" }, std::move(l1), std::move(r1));
+		PTree p2(Tok{ Type::Number, "2" });
+		PTree t1(Tok{ Type::Number, "0" });
+		PTree t2(Tok{ Type::BinaryOperation, "^" }, std::move(p1), std::move(p2));
+		PTree root(Tok{ Type::BinaryOperation, "-" }, std::move(t1), std::move(t2));
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
+
+
 	TEST(TestParser, TestThrowsOnInvalid)
 	{
 		std::vector<Tok> tokens = {
