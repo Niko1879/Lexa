@@ -68,8 +68,13 @@ namespace Lexa
 			tokens.insert(tokens.begin(), Token{ TokenType::LeftBracket, "(" });
 			tokens.push_back(Token{ TokenType::RightBracket, ")" });
 
+			bool fail = false;
+			std::string message;
+
 			for (size_t i = 0; i < tokens.size(); ++i)
 			{
+				if (fail) throw std::invalid_argument(message);
+
 				Token t = tokens[i];
 				
 				switch (t.type)
@@ -110,13 +115,19 @@ namespace Lexa
 					{
 						_Pop(partialTrees, stack);
 					}
-					if (stack.size() == 0) throw std::invalid_argument("Mismatched parentheses");
+					if (stack.size() == 0)
+					{
+						fail = true;
+						message = "Mismatched parentheses";
+						break;
+					}
 					stack.pop_back(); //pop the left bracket
 					if (stack.size() > 0 && stack.back().type == TokenType::Function) _Pop(partialTrees, stack); //pop function
 					break;
 
 				default:
-					throw std::invalid_argument("Unrecognised symbol: " + t.value);
+					fail = true;
+					message =  "Unrecognised symbol: " + t.value;
 					break;
 				}
 			}
