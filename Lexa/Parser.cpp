@@ -5,11 +5,13 @@ namespace Lexa
 {
 	namespace Interpreter
 	{
-		void _Pop(std::vector<ParseTree>& pTrees, std::vector<Token>& stack)
+		bool _Pop(std::vector<ParseTree>& pTrees, std::vector<Token>& stack)
 		{
-			if (pTrees.size() < 1 || 
+			if (pTrees.size() < 1 ||
 				(stack.back().type == TokenType::BinaryOperation && pTrees.size() < 2))
-				throw std::invalid_argument("Could not parse expression");
+			{
+				return false;
+			}
 
 			if (stack.back().type == TokenType::BinaryOperation)
 			{
@@ -28,6 +30,7 @@ namespace Lexa
 			}
 
 			stack.pop_back();
+			return true;
 		}
 
 
@@ -69,7 +72,7 @@ namespace Lexa
 			tokens.push_back(Token{ TokenType::RightBracket, ")" });
 
 			bool fail = false;
-			std::string message = "";
+			std::string message = "Could not parse expression";
 
 			for (size_t i = 0; i < tokens.size(); ++i)
 			{
@@ -98,7 +101,11 @@ namespace Lexa
 						   OperatorPrecedence.at(StrToBinaryOperation.at(stack.back().value)) >=
 						   OperatorPrecedence.at(StrToBinaryOperation.at(t.value)))
 					{
-						_Pop(partialTrees, stack);
+						if (!_Pop(partialTrees, stack)) 
+						{
+							fail = true;
+							break;
+						}
 					}
 
 					stack.push_back(t);
@@ -113,7 +120,11 @@ namespace Lexa
 					_CheckImplicitMultiplication(tokens, i);
 					while (stack.size() > 0 && stack.back().type != TokenType::LeftBracket)
 					{
-						_Pop(partialTrees, stack);
+						if (!_Pop(partialTrees, stack))
+						{
+							fail = true;
+							break;
+						}
 					}
 					if (stack.size() == 0)
 					{
@@ -135,7 +146,6 @@ namespace Lexa
 			if (partialTrees.size() == 0 || stack.size() > 0)
 			{
 				fail = true;
-				message = "Could not parse expression";
 			}
 
 			if (fail) throw std::invalid_argument(message);
