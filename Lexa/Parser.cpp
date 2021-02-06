@@ -7,11 +7,12 @@ namespace Lexa
 	{
 		void _Pop(std::vector<ParseTree>& pTrees, std::vector<Token>& stack)
 		{
-			if (stack.size() == 0) throw std::invalid_argument("Could not parse expression");
-			
+			if (pTrees.size() < 1 || 
+				(stack.back().type == TokenType::BinaryOperation && pTrees.size() < 2))
+				throw std::invalid_argument("Could not parse expression");
+
 			if (stack.back().type == TokenType::BinaryOperation)
 			{
-				if (pTrees.size() < 2) throw std::invalid_argument("Could not parse expression");
 				ParseTree left(std::move(pTrees[pTrees.size() - 2]));
 				ParseTree right(std::move(pTrees[pTrees.size() - 1]));
 				pTrees.pop_back();
@@ -21,13 +22,10 @@ namespace Lexa
 
 			else if (stack.back().type == TokenType::Function)
 			{
-				if (pTrees.size() < 1) throw std::invalid_argument("Could not parse expression");
 				ParseTree left(std::move(pTrees.back()));
 				pTrees.pop_back();
 				pTrees.emplace_back(stack.back(), std::move(left), true);
 			}
-
-			else throw std::invalid_argument("Could not parse expression");
 
 			stack.pop_back();
 		}
