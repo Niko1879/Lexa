@@ -10,6 +10,6 @@ namespace Lexa
 	{
 		using ParseTree = Tree<Token>;
 
-		ParseTree Parse(const std::vector<Token>& tokens);
+		ParseTree Parse(std::vector<Token> tokens);
 	}
 }

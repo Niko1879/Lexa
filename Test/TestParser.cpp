@@ -158,9 +158,11 @@ namespace InterpreterTest
 			Tok{Type::Number, "2"},
 		};
 
-		PTree p1(Tok{ Type::Number, "-1" });
-		PTree p2(Tok{ Type::Number, "2" });
-		PTree root(Tok{ Type::BinaryOperation, "^" }, std::move(p1), std::move(p2));
+		PTree l1(Tok{ Type::Number, "1" });
+		PTree r1(Tok{ Type::Number, "2" });
+		PTree p1(Tok{ Type::Number, "0" });
+		PTree p2(Tok{ Type::BinaryOperation, "^" }, std::move(l1), std::move(r1));
+		PTree root(Tok{ Type::BinaryOperation, "-" }, std::move(p1), std::move(p2));
 
 		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
 		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));

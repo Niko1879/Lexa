@@ -33,13 +33,18 @@ namespace Lexa
 		}
 
 		
-		ParseTree Parse(const std::vector<Token>& tokens)
+		ParseTree Parse(std::vector<Token> tokens)
 		{
 			std::vector<ParseTree> partialTrees;
 			std::vector<Token> stack;
 
-			for (Token t : tokens)
+			tokens.insert(tokens.begin(), Token{ TokenType::LeftBracket, "(" });
+			tokens.push_back(Token{ TokenType::RightBracket, ")" });
+
+			for (size_t i = 0; i < tokens.size(); ++i)
 			{
+				Token t = tokens[i];
+				
 				switch (t.type)
 				{
 				case TokenType::Number:
@@ -66,8 +71,16 @@ namespace Lexa
 					break;
 
 				case TokenType::LeftBracket:
-					stack.push_back(t);
-					break;
+					if (i + 1 == tokens.size()) throw std::invalid_argument("Mismatched parentheses");
+					else
+					{
+						Token next = tokens[i + 1];
+						if (next.type == TokenType::BinaryOperation && StrToBinaryOperation.at(next.value) == BinaryOperation::Minus)
+							tokens.insert(tokens.begin() + i + 1, Token{ TokenType::Number, "0" });
+
+						stack.push_back(t);
+						break;
+					}
 
 				case TokenType::RightBracket:
 					while (stack.size() > 0 && stack.back().type != TokenType::LeftBracket)
@@ -76,7 +89,7 @@ namespace Lexa
 					}
 					if (stack.size() == 0) throw std::invalid_argument("Mismatched parentheses");
 					stack.pop_back(); //pop the left bracket
-					if (stack.size() > 0) _Pop(partialTrees, stack); //pop function
+					if (stack.size() > 0 && stack.back().type == TokenType::Function) _Pop(partialTrees, stack); //pop function
 					break;
 
 				default:
@@ -85,11 +98,7 @@ namespace Lexa
 				}
 			}
 
-			while (stack.size() > 0)
-			{
-				_Pop(partialTrees, stack);
-			}
-			if (partialTrees.size() == 0) throw std::invalid_argument("Could not parse expression");
+			if (partialTrees.size() == 0 || stack.size() > 0) throw std::invalid_argument("Could not parse expression");
 			return std::move(partialTrees.back());
 		}
 	}
