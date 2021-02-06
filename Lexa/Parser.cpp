@@ -46,6 +46,13 @@ namespace Lexa
 				switch (t.type)
 				{
 				case TokenType::Number:
+					if (i + 1 < tokens.size())
+					{
+						Token next = tokens[i + 1];
+						if (next.type == TokenType::Variable || next.type == TokenType::LeftBracket)
+							tokens.insert(tokens.begin() + i + 1, Token{ TokenType::BinaryOperation, "*" });
+					}
+
 				case TokenType::Variable:
 				case TokenType::MathConstant:
 					partialTrees.emplace_back(t);
@@ -81,6 +88,13 @@ namespace Lexa
 					}
 
 				case TokenType::RightBracket:
+					if (i + 1 < tokens.size())
+					{
+						Token next = tokens[i + 1];
+						if (next.type == TokenType::Variable || next.type == TokenType::LeftBracket)
+							tokens.insert(tokens.begin() + i + 1, Token{ TokenType::BinaryOperation, "*" });
+					}
+					
 					while (stack.size() > 0 && stack.back().type != TokenType::LeftBracket)
 					{
 						_Pop(partialTrees, stack);

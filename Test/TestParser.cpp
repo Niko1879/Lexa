@@ -146,6 +146,60 @@ namespace InterpreterTest
 	}
 
 
+	TEST(TestParser, TestImplicitMultiplication)
+	{
+		TOKENS tokens = {
+			NUM("3"), VAR("x"), OP("+"), NUM("1")
+		};
+
+		LEAF(l1, NUM("3"));
+		LEAF(r1, VAR("x"));
+		BRANCH(p1, OP("*"), l1, r1);
+		LEAF(p2, NUM("1"));
+		BRANCH(root, OP("+"), p1, p2);
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
+
+
+	TEST(TestParser, TestImplicitMultiplication2)
+	{
+		TOKENS tokens = {
+			NUM("3"), LBRACKET, NUM("1"), OP("+"), VAR("x"), RBRACKET
+		};
+
+		LEAF(p1, NUM("3"));
+		LEAF(l1, NUM("1"));
+		LEAF(r1, VAR("x"));
+		BRANCH(p2, OP("+"), l1, r1);
+		BRANCH(root, OP("*"), p1, p2);
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
+
+
+	TEST(TestParser, TestImplicitMultiplication3)
+	{
+		TOKENS tokens = {
+			LBRACKET, NUM("1"), OP("+"), VAR("x"), RBRACKET,
+			LBRACKET, NUM("1"), OP("-"),  VAR("x"), RBRACKET
+		};
+
+		LEAF(l1, NUM("1"));
+		LEAF(r1, VAR("x"));
+		BRANCH(p1, OP("+"), l1, r1);
+		LEAF(l2, NUM("1"));
+		LEAF(r2, VAR("x"));
+		BRANCH(p2, OP("-"), l2, r2);
+		BRANCH(root, OP("*"), p1, p2);
+
+		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+	}
+
+
 	TEST(TestParser, TestThrowsOnInvalid)
 	{
 		TOKENS tokens = {
