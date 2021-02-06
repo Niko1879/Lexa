@@ -69,11 +69,11 @@ namespace Lexa
 			tokens.push_back(Token{ TokenType::RightBracket, ")" });
 
 			bool fail = false;
-			std::string message;
+			std::string message = "";
 
 			for (size_t i = 0; i < tokens.size(); ++i)
 			{
-				if (fail) throw std::invalid_argument(message);
+				if (fail) break;
 
 				Token t = tokens[i];
 				
@@ -132,7 +132,13 @@ namespace Lexa
 				}
 			}
 
-			if (partialTrees.size() == 0 || stack.size() > 0) throw std::invalid_argument("Could not parse expression");
+			if (partialTrees.size() == 0 || stack.size() > 0)
+			{
+				fail = true;
+				message = "Could not parse expression";
+			}
+
+			if (fail) throw std::invalid_argument(message);
 			return std::move(partialTrees.back());
 		}
 	}
