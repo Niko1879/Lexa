@@ -30,6 +30,35 @@ namespace Lexa
 			stack.pop_back();
 		}
 
+
+		bool _LookAhead(const std::vector<Token>& tokens, size_t index, bool (*pred)(const Token&))
+		{
+			if (index + 1 == tokens.size()) return false;
+			Token next = tokens[index + 1];
+			return pred(next);
+		}
+
+
+		void _CheckImplicitMultiplication(std::vector<Token>& tokens, size_t index)
+		{
+			if (_LookAhead(tokens, index,
+				[](const Token& t) {return t.type == TokenType::Variable || t.type == TokenType::LeftBracket; })
+)
+			{
+				tokens.insert(tokens.begin() + index + 1, Token{ TokenType::BinaryOperation, "*" });
+			}
+		}
+
+
+		void _CheckNegativeNumber(std::vector<Token>& tokens, size_t index)
+		{
+			if (_LookAhead(tokens, index,
+				[](const Token& t) {return t.type == TokenType::BinaryOperation && StrToBinaryOperation.at(t.value) == BinaryOperation::Minus;}))
+			{
+				tokens.insert(tokens.begin() + index + 1, Token{ TokenType::Number, "0" });
+			}
+		}
+
 		
 		ParseTree Parse(std::vector<Token> tokens)
 		{
@@ -46,12 +75,7 @@ namespace Lexa
 				switch (t.type)
 				{
 				case TokenType::Number:
-					if (i + 1 < tokens.size())
-					{
-						Token next = tokens[i + 1];
-						if (next.type == TokenType::Variable || next.type == TokenType::LeftBracket)
-							tokens.insert(tokens.begin() + i + 1, Token{ TokenType::BinaryOperation, "*" });
-					}
+					_CheckImplicitMultiplication(tokens, i);
 
 				case TokenType::Variable:
 				case TokenType::MathConstant:
@@ -76,25 +100,12 @@ namespace Lexa
 					break;
 
 				case TokenType::LeftBracket:
-					if (i + 1 == tokens.size()) throw std::invalid_argument("Mismatched parentheses");
-					else
-					{
-						Token next = tokens[i + 1];
-						if (next.type == TokenType::BinaryOperation && StrToBinaryOperation.at(next.value) == BinaryOperation::Minus)
-							tokens.insert(tokens.begin() + i + 1, Token{ TokenType::Number, "0" });
-
-						stack.push_back(t);
-						break;
-					}
+					_CheckNegativeNumber(tokens, i);
+					stack.push_back(t);
+					break;
 
 				case TokenType::RightBracket:
-					if (i + 1 < tokens.size())
-					{
-						Token next = tokens[i + 1];
-						if (next.type == TokenType::Variable || next.type == TokenType::LeftBracket)
-							tokens.insert(tokens.begin() + i + 1, Token{ TokenType::BinaryOperation, "*" });
-					}
-					
+					_CheckImplicitMultiplication(tokens, i);
 					while (stack.size() > 0 && stack.back().type != TokenType::LeftBracket)
 					{
 						_Pop(partialTrees, stack);
