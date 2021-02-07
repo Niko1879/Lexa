@@ -7,6 +7,10 @@ namespace Lexa
 {
 	namespace Interpreter
 	{
+		using Number = float;
+		using Variable = std::string;
+
+
 		enum class TokenType
 		{
 			Number,
