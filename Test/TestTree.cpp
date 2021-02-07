@@ -94,4 +94,23 @@ namespace InterpreterTest
 
 		EXPECT_FALSE(t1 == t2);
 	}
+
+
+	TEST(TestTree, TestFindUnique)
+	{
+		LEAF(l1, VAR("x"));
+		LEAF(r1, VAR("y"));
+		BRANCH(b1, OP("+"), l1, r1);
+
+		LEAF(l2, VAR("x"));
+		LEAF(r2, VAR("y"));
+		BRANCH(b2, OP("-"), l2, r2);
+
+		BRANCH(root, OP("/"), b1, b2);
+		std::vector<Tok> res = Lexa::Tree::FindUnique(root, [](const Tok& t) {return t.value == "x" || t.value == "y"; });
+
+		EXPECT_EQ(res.size(), 2);
+		EXPECT_EQ(res[0], VAR("x"));
+		EXPECT_EQ(res[1], VAR("y"));
+	}
 }
