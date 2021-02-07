@@ -8,7 +8,7 @@ namespace Lexa
 {
 	namespace Interpreter
 	{
-		using ParseTree = Tree<Token>;
+		using ParseTree = Tree::Tree<Token>;
 
 		ParseTree Parse(std::vector<Token> tokens);
 	}
