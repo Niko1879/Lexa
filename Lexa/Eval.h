@@ -2,6 +2,7 @@
 #include <variant>
 #include "Tree.h"
 #include "Token.h"
+#include "Types.h"
 #include <string>
 
 
@@ -11,24 +12,24 @@ namespace Lexa
 	{	
 		class Eval2D
 		{
-			using Operator = float (*)(float, float);
-			using Function = float (*)(float);
-			using Number = float;
-			using Variable = std::string;
-			using Node = std::variant<Number, Variable, Operator, Function>;
-			using ExprTree = Tree<Node>;
+			using ParseTree = Tree::Tree<Token>;
+			using Node = std::variant<Number, Variable, BinaryOperation, Function>;
+			using ExprTree = Tree::Tree<Node>;
 
 		public:
-			Eval2D(Tree<Token>&& tree);
+			Eval2D(const ParseTree& tree);
 
-			float operator()(float x, float y);
+			float operator()(float x, float y) const;
 
 		private:
+			ExprTree MakeEval(const ParseTree& tree) const;
+
+			float Eval(const ExprTree& expr, float x, float y) const;
+
 			ExprTree expr;
 
-			ExprTree MakeEval(Tree<Token>&& tree);
-
-			float Eval(float x, float y);
+			std::string X;
+			std::string Y;
 		};
 	}
 }
