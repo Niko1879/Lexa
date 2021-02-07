@@ -40,6 +40,17 @@ namespace InterpreterTest
         EXPECT_EQ(expected, actual);
     }
 
+
+    TEST(TestLexer, TestTokeniseDecimal)
+    {
+        TOKENS actual;
+        EXPECT_NO_THROW(actual = Lexa::Interpreter::Tokenise("321.334 + 5"));
+        TOKENS expected = { NUM("321.334"), OP("+"), NUM("5") };
+
+        EXPECT_EQ(expected, actual);
+    }
+
+    
     TEST(TestLexer, TestTokeniseParen)
     {
         TOKENS actual;

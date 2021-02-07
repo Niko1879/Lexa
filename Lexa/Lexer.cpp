@@ -36,7 +36,7 @@ namespace Lexa
 				char curr = tolower(expression[i]);
 				std::string curr_s = std::string(1, curr);
 				
-				if (isdigit(curr))
+				if (isdigit(curr) || curr == '.')
 				{
 					numbuf << curr;
 					continue;
