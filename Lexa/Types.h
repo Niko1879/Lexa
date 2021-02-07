@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
-
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 namespace Lexa
 {
@@ -18,55 +19,7 @@ namespace Lexa
 		};
 
 
-		enum class BinaryOperation
-		{
-			Plus,
-			Minus,
-			Times,
-			Divide,
-			Raise,
-		};
-
-
-		enum class Function
-		{
-			Exp,
-			Log,
-			Sin,
-			Cos,
-			Tan,
-			Sec,
-			Cosec,
-			Cot,
-			Sinh,
-			Cosh,
-			Tanh,
-			Sech,
-			Cosech,
-			Coth,
-			Arcsin,
-			Arccos,
-			Arctan,
-			Arcsec,
-			Arccosec,
-			Arccot,
-			Arsinh,
-			Arcosh,
-			Artanh,
-			Arsech,
-			Arcosech,
-			Arcoth,
-		};
-
-
-		enum class MathConstant
-		{
-			E,
-			Pi,
-		};
-
-
-		const std::unordered_map<TokenType, std::string> StrToTokenType
+		const std::unordered_map<TokenType, std::string> TokenTypeToStr
 		{
 			{TokenType::Number, "Number"},
 			{TokenType::BinaryOperation, "BinaryOperation"},
@@ -77,62 +30,64 @@ namespace Lexa
 		};
 
 
+		using BinaryOperation = float(*)(float, float);
 		const std::unordered_map<std::string, BinaryOperation> StrToBinaryOperation
 		{
-			{"+", BinaryOperation::Plus},
-			{"-", BinaryOperation::Minus},
-			{"*", BinaryOperation::Times},
-			{"/", BinaryOperation::Divide},
-			{"^", BinaryOperation::Raise},
+			{"+", [](float a, float b) {return a + b; } },
+			{"-", [](float a, float b) {return a - b; } },
+			{"*",[](float a, float b) {return a * b; } },
+			{"/", [](float a, float b) {return a / b; } },
+			{"^", pow},
 		};
 
 
+		const std::unordered_map<std::string, int> OperatorPrecedence
+		{
+			{"-", 0},
+			{"+", 0},
+			{"*", 1},
+			{"/", 1},
+			{"^", 2},
+		};
+
+
+		using Function = float(*)(float);
 		const std::unordered_map<std::string, Function> StrToFunction
 		{
-			{"exp", Function::Exp},
-			{"log", Function::Log},
-			{"ln", Function::Log},
-			{"sin", Function::Sin},
-			{"cos", Function::Cos},
-			{"tan", Function::Tan},
-			{"sec", Function::Sec},
-			{"cosec", Function::Cosec},
-			{"cot", Function::Cot},
-			{"sinh", Function::Sinh},
-			{"cosh", Function::Cosh},
-			{"tanh", Function::Tanh},
-			{"sech", Function::Sech},
-			{"cosech", Function::Cosech},
-			{"coth", Function::Coth},
-			{"arcsin", Function::Arcsin},
-			{"arccos", Function::Arccos},
-			{"arctan", Function::Arctan},
-			{"arcsec", Function::Arcsec},
-			{"arccosec", Function::Arccosec},
-			{"arccot", Function::Arccot},
-			{"arsinh", Function::Arsinh},
-			{"arcosh", Function::Arcosh},
-			{"artanh", Function::Artanh},
-			{"arsech", Function::Arsech},
-			{"arcosech", Function::Arcosech},
-			{"artanh", Function::Artanh},
+			{"exp", exp},
+			{"log", log},
+			{"ln", log},
+			{"sin", sin},
+			{"cos", cos},
+			{"tan", tan},
+			{"sec", [](float a) {return 1/cos(a); }},
+			{"cosec", [](float a) {return 1 / sin(a); }},
+			{"cot", [](float a) {return 1 / tan(a); }},
+			{"sinh", sinh},
+			{"cosh", cosh},
+			{"tanh", tanh},
+			{"sech", [](float a) {return 1 / cosh(a); }},
+			{"cosech", [](float a) {return 1 / sinh(a); }},
+			{"coth", [](float a) {return 1 / tanh(a); }},
+			{"arcsin", asin},
+			{"arccos", acos},
+			{"arctan", atan},
+			{"arcsec", [](float a) {return acos(1 / a); }},
+			{"arccosec", [](float a) {return asin(1 / a); }},
+			{"arccot", [](float a) {return atan(1 / a); }},
+			{"arsinh", asinh},
+			{"arcosh", acosh},
+			{"artanh", atanh},
+			{"arsech", [](float a) {return acosh(1 / a); }},
+			{"arcosech", [](float a) {return asinh(1 / a); }},
+			{"artanh", [](float a) {return atanh(1 / a); }},
 		};
 
 
-		const std::unordered_map<std::string, MathConstant> StrToMathConstant
+		const std::unordered_map<std::string, float> StrToMathConstant
 		{
-			{"e", MathConstant::E},
-			{"pi", MathConstant::Pi},
-		};
-
-
-		const std::unordered_map<BinaryOperation, int> OperatorPrecedence
-		{
-			{BinaryOperation::Plus, 0},
-			{BinaryOperation::Minus, 0},
-			{BinaryOperation::Times, 1},
-			{BinaryOperation::Divide, 1},
-			{BinaryOperation::Raise, 2},
+			{"e", M_E},
+			{"pi", M_PI},
 		};
 	}
 }

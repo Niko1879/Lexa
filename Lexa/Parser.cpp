@@ -56,7 +56,7 @@ namespace Lexa
 		void _CheckNegativeNumber(std::vector<Token>& tokens, size_t index)
 		{
 			if (_LookAhead(tokens, index,
-				[](const Token& t) {return t.type == TokenType::BinaryOperation && StrToBinaryOperation.at(t.value) == BinaryOperation::Minus;}))
+				[](const Token& t) {return t.type == TokenType::BinaryOperation && t.value == "-";}))
 			{
 				tokens.insert(tokens.begin() + index + 1, Token{ TokenType::Number, "0" });
 			}
@@ -98,8 +98,8 @@ namespace Lexa
 
 					while (stack.size() > 0 && 
 						   stack.back().type != TokenType::LeftBracket &&
-						   OperatorPrecedence.at(StrToBinaryOperation.at(stack.back().value)) >=
-						   OperatorPrecedence.at(StrToBinaryOperation.at(t.value)))
+						   OperatorPrecedence.at(stack.back().value) >=
+						   OperatorPrecedence.at(t.value))
 					{
 						if (!_Pop(partialTrees, stack)) 
 						{

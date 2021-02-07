@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include "Debug.h"
+#include <iostream>
+
 
 namespace Lexa
 {
