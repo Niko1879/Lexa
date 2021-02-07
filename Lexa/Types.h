@@ -1,7 +1,6 @@
 #pragma once
 #include <unordered_map>
-#define _USE_MATH_DEFINES
-#include <math.h>
+
 
 namespace Lexa
 {
@@ -90,8 +89,8 @@ namespace Lexa
 
 		const std::unordered_map<std::string, float> StrToMathConstant
 		{
-			{"e", M_E},
-			{"pi", M_PI},
+			{"e", exp(1.0f)},
+			{"pi", atan(1.0f) * 4},
 		};
 	}
 }
