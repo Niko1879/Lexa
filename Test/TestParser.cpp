@@ -22,8 +22,8 @@ namespace InterpreterTest
 		BRANCH(p2, OP("/"), t1, l5);
 		BRANCH(root, OP("-"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -45,8 +45,8 @@ namespace InterpreterTest
 		BRANCH(p2, OP("+"), l2, r2);
 		BRANCH(root, OP("/"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -67,8 +67,8 @@ namespace InterpreterTest
 		BRANCH(p2, OP("^"), l2, r2);
 		BRANCH(root, OP("-"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -87,8 +87,8 @@ namespace InterpreterTest
 		BRANCH(p2, FUN("sin"), arg2, true);
 		BRANCH(root, OP("+"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -104,8 +104,8 @@ namespace InterpreterTest
 		LEAF(p2, MCON("pi"));
 		BRANCH(root, OP("+"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -121,8 +121,8 @@ namespace InterpreterTest
 		BRANCH(p2, OP("^"), l1, r1);
 		BRANCH(root, OP("-"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -141,8 +141,8 @@ namespace InterpreterTest
 		BRANCH(t2, OP("^"), p1, p2);
 		BRANCH(root, OP("-"), t1, t2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -158,8 +158,8 @@ namespace InterpreterTest
 		LEAF(p2, NUM("1"));
 		BRANCH(root, OP("+"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -175,8 +175,8 @@ namespace InterpreterTest
 		BRANCH(p2, OP("+"), l1, r1);
 		BRANCH(root, OP("*"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -195,8 +195,8 @@ namespace InterpreterTest
 		BRANCH(p2, OP("-"), l2, r2);
 		BRANCH(root, OP("*"), p1, p2);
 
-		EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-		EXPECT_EQ(root, Lexa::Interpreter::Parse(tokens));
+		EXPECT_NO_THROW(Interpreter::Parse(tokens));
+		EXPECT_EQ(root, Interpreter::Parse(tokens));
 	}
 
 
@@ -206,7 +206,7 @@ namespace InterpreterTest
 			NUM("1"), OP("*"), OP("/"), NUM("1")
 		};
 
-		EXPECT_THROW(Lexa::Interpreter::Parse(tokens), std::invalid_argument);
+		EXPECT_THROW(Interpreter::Parse(tokens), std::invalid_argument);
 	}
 
 
@@ -216,7 +216,7 @@ namespace InterpreterTest
 			LBRACKET, NUM("1"), OP("/"), NUM("1")
 		};
 
-		EXPECT_THROW(Lexa::Interpreter::Parse(tokens), std::invalid_argument);
+		EXPECT_THROW(Interpreter::Parse(tokens), std::invalid_argument);
 	}
 
 
@@ -226,6 +226,6 @@ namespace InterpreterTest
 			RBRACKET, VAR("x"), VAR("y")
 		};
 
-		EXPECT_THROW(Lexa::Interpreter::Parse(tokens), std::invalid_argument);
+		EXPECT_THROW(Interpreter::Parse(tokens), std::invalid_argument);
 	}
 }

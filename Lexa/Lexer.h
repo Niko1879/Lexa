@@ -7,11 +7,8 @@
 #include "Token.h"
 
 
-namespace Lexa
+namespace Interpreter
 {
-	namespace Interpreter
-	{
-		std::vector<Token> Tokenise(const std::string& expression);
-	}
-};
+	std::vector<Token> Tokenise(const std::string& expression);
+}
 

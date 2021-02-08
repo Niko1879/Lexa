@@ -107,7 +107,7 @@ namespace InterpreterTest
 		BRANCH(b2, OP("-"), l2, r2);
 
 		BRANCH(root, OP("/"), b1, b2);
-		std::vector<Tok> res = Lexa::Tree::FindUnique(root, [](const Tok& t) {return t.value == "x" || t.value == "y"; });
+		std::vector<Tok> res = Tree::FindUnique(root, [](const Tok& t) {return t.value == "x" || t.value == "y"; });
 
 		EXPECT_EQ(res.size(), 2);
 		EXPECT_EQ(res[0], VAR("x"));

@@ -24,6 +24,7 @@
     <ProjectGuid>{2dd3a8d0-7bf8-4165-bf3c-ae6292805403}</ProjectGuid>
     <RootNamespace>Lexa</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Interpreter</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

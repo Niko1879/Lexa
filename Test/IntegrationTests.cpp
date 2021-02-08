@@ -37,12 +37,12 @@ namespace InterpreterTests
 			auto expr = pair.first;
 			std::cout << expr << std::endl;
 			auto expected = pair.second;
-			EXPECT_NO_THROW(Lexa::Interpreter::Tokenise(pair.first));
-			auto tokens = Lexa::Interpreter::Tokenise(pair.first);
-			EXPECT_NO_THROW(Lexa::Interpreter::Parse(tokens));
-			auto pTree = Lexa::Interpreter::Parse(tokens);
-			EXPECT_NO_THROW(Lexa::Interpreter::Eval2D _(pTree));
-			auto eval = Lexa::Interpreter::Eval2D(pTree);
+			EXPECT_NO_THROW(Interpreter::Tokenise(pair.first));
+			auto tokens = Interpreter::Tokenise(pair.first);
+			EXPECT_NO_THROW(Interpreter::Parse(tokens));
+			auto pTree = Interpreter::Parse(tokens);
+			EXPECT_NO_THROW(Interpreter::Eval2D _(pTree));
+			auto eval = Interpreter::Eval2D(pTree);
 			EXPECT_NO_THROW(eval(x, y));
 			float res = eval(x, y);
 			if (!FLOAT_EQ(res, expected) && !isnan(res))

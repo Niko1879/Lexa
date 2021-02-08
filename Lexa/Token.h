@@ -3,19 +3,16 @@
 #include <ostream>
 #include "Types.h"
 
-namespace Lexa
+namespace Interpreter
 {
-	namespace Interpreter
+	struct Token
 	{
-		struct Token
-		{
-			TokenType type;
-			std::string value;
-		};
+		TokenType type;
+		std::string value;
+	};
 
 
-		bool operator==(const Token& t1, const Token& t2);
-		std::ostream& operator<<(std::ostream& stream, const Token& token);
-	}
-};
+	bool operator==(const Token& t1, const Token& t2);
+	std::ostream& operator<<(std::ostream& stream, const Token& token);
+}
 

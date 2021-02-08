@@ -4,12 +4,9 @@
 #include "Tree.h"
 
 
-namespace Lexa
+namespace Interpreter
 {
-	namespace Interpreter
-	{
-		using ParseTree = Tree::Tree<Token>;
+	using ParseTree = Tree::Tree<Token>;
 
-		ParseTree Parse(std::vector<Token> tokens);
-	}
+	ParseTree Parse(std::vector<Token> tokens);
 }
