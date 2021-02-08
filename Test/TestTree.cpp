@@ -1,42 +1,41 @@
 #include "pch.h"
 #include "InterpreterTestDefs.h"
-#include "Tree.h"
 
 
 namespace InterpreterTest
 {
 	TEST(TestTree, TestConstruct)
 	{
-		Tok t{ Type::Number, "1" };
+		Tok t = NUM("1");
 		EXPECT_NO_THROW(
-			Lexa::Tree<Tok> left(Tok{ Type::Number, "1" });
-			Lexa::Tree<Tok> right(t);
-			Lexa::Tree<Tok> root(Tok{Type::Operation, "+"}, std::move(left), std::move(right));
+			LEAF(left, NUM("1"));
+			LEAF(right, t);
+			BRANCH(root, OP("+"), left, right);
 		);
 	}
 
 	TEST(TestTree, TestGetData)
 	{
-		Tok t{ Type::Number, "1" };
-		Tok u{ Type::Number, "1" };
-		Lexa::Tree<Tok> root(t);
-		EXPECT_EQ(root.Data(), t);
+		Tok t = NUM("1");
+		Tok u = NUM("2");
+		LEAF(root, t);
+		EXPECT_EQ(root.Data(), NUM("1"));
 		root.Data() = u;
-		EXPECT_EQ(root.Data(), u);
+		EXPECT_EQ(root.Data(), NUM("2"));
 	}
 
 
 	TEST(TestTree, TestGetChild)
 	{
-		Lexa::Tree<Tok> left(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> right(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> root(Tok{ Type::Operation, "+" }, std::move(left), std::move(right));
+		LEAF(left, NUM("1"));
+		LEAF(right, NUM("2"));
+		BRANCH(root, OP("+"), left, right);
 
-		Lexa::Tree<Tok>& l = root.Left();
-		Lexa::Tree<Tok>& r = root.Right();
+		PTree& l = root.Left();
+		PTree& r = root.Right();
 
-		Tok c1{ Type::Number, "1" };
-		Tok c2{ Type::Number, "2" };
+		Tok c1 = NUM("1");
+		Tok c2 = NUM("2");
 		EXPECT_EQ(l.Data(), c1);
 		EXPECT_EQ(r.Data(), c2);
 	}
@@ -44,13 +43,13 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityTrue)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r1));
+		LEAF(l1, NUM("1"));
+		LEAF(r1, NUM("2"));
+		BRANCH(t1, OP("+"), l1, r1);
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+		LEAF(l2, NUM("1"));
+		LEAF(r2, NUM("2"));
+		BRANCH(t2, OP("+"), l2, r2);
 
 		EXPECT_TRUE(t1 == t2);
 	}
@@ -58,13 +57,13 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityFalse1)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r1));
+		LEAF(l1, NUM("1"));
+		LEAF(r1, NUM("2"));
+		BRANCH(t1, OP("+"), l1, r1);
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+		LEAF(l2, NUM("2"));
+		LEAF(r2, NUM("1"));
+		BRANCH(t2, OP("+"), l2, r2);
 
 		EXPECT_FALSE(t1 == t2);
 	}
@@ -72,13 +71,13 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityFalse2)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r1(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "-" }, std::move(l1), std::move(r1));
+		LEAF(l1, NUM("1"));
+		LEAF(r1, NUM("2"));
+		BRANCH(t1, OP("-"), l1, r1);
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l2), std::move(r2));
+		LEAF(l2, NUM("1"));
+		LEAF(r2, NUM("2"));
+		BRANCH(t2, OP("+"), l2, r2);
 
 		EXPECT_FALSE(t1 == t2);
 	}
@@ -86,13 +85,32 @@ namespace InterpreterTest
 
 	TEST(TestTree, TestEqualityFalse3)
 	{
-		Lexa::Tree<Tok> l1(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> t1(Tok{ Type::Operation, "+" }, std::move(l1), true);
+		LEAF(l1, NUM("1"));
+		BRANCH(t1, OP("+"), l1, true);
 
-		Lexa::Tree<Tok> l2(Tok{ Type::Number, "1" });
-		Lexa::Tree<Tok> r2(Tok{ Type::Number, "2" });
-		Lexa::Tree<Tok> t2(Tok{ Type::Operation, "+" }, std::move(l1), std::move(r2));
+		LEAF(l2, NUM("1"));
+		LEAF(r2, NUM("2"));
+		BRANCH(t2, OP("+"), l1, r2);
 
 		EXPECT_FALSE(t1 == t2);
+	}
+
+
+	TEST(TestTree, TestFindUnique)
+	{
+		LEAF(l1, VAR("x"));
+		LEAF(r1, VAR("y"));
+		BRANCH(b1, OP("+"), l1, r1);
+
+		LEAF(l2, VAR("x"));
+		LEAF(r2, VAR("y"));
+		BRANCH(b2, OP("-"), l2, r2);
+
+		BRANCH(root, OP("/"), b1, b2);
+		std::vector<Tok> res = Lexa::Tree::FindUnique(root, [](const Tok& t) {return t.value == "x" || t.value == "y"; });
+
+		EXPECT_EQ(res.size(), 2);
+		EXPECT_EQ(res[0], VAR("x"));
+		EXPECT_EQ(res[1], VAR("y"));
 	}
 }

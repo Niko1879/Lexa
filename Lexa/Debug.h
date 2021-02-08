@@ -4,6 +4,4 @@
 #else
 #define D(x)
 #endif
-#ifdef D
 #include <stdexcept>
-#endif

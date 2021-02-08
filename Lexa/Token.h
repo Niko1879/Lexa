@@ -1,45 +1,12 @@
 #pragma once
 #include <unordered_map>
 #include <ostream>
+#include "Types.h"
 
 namespace Lexa
 {
 	namespace Interpreter
 	{
-		enum class TokenType
-		{
-			Number,
-			Operation,
-		};
-
-
-		enum class Operation
-		{
-			Plus,
-			Minus,
-			Times,
-			Divide,
-			Raise,
-		};
-
-
-		const std::unordered_map<std::string, Operation> Operations
-		{
-			{"+", Operation::Plus},
-			{"-", Operation::Minus},
-			{"*", Operation::Times},
-			{"/", Operation::Divide},
-			{"^", Operation::Raise},
-		};
-
-
-		const std::unordered_map<TokenType, std::string> TokenTypeStr
-		{
-			{TokenType::Number, "Number"},
-			{TokenType::Operation, "Operation"},
-		};
-
-
 		struct Token
 		{
 			TokenType type;

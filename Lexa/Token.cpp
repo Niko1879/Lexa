@@ -13,7 +13,7 @@ namespace Lexa
 
 		std::ostream& operator<<(std::ostream& stream, const Token& token)
 		{
-			return stream << "(" << TokenTypeStr.at(token.type) << ", " << token.value << ")";
+			return stream << "(" << TokenTypeToStr.at(token.type) << ", " << token.value << ")";
 		}
 	}
 }
