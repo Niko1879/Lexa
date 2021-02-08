@@ -15,7 +15,9 @@ namespace Lexa
 
 		float Eval2D::operator()(float x, float y) const
 		{
-			return Eval(expr, x, y);
+			float res = Eval(expr, x, y);
+			if (isnan(res) || isinf(res)) return NAN;
+			return res;
 		}
 
 		Eval2D::ExprTree Eval2D::MakeEval(const ParseTree& tree) const
@@ -26,6 +28,9 @@ namespace Lexa
 			{
 			case TokenType::Number:
 				return ExprTree(Node(stof(val)));
+
+			case TokenType::MathConstant:
+				return ExprTree(Node(StrToMathConstant.at(val)));
 
 			case TokenType::Variable:
 				return ExprTree(Node(val));

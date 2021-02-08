@@ -13,7 +13,7 @@
 #define LEAF(name, x) Lexa::Tree::Tree<Lexa::Interpreter::Token> name(std::move(x))
 #define BRANCH(name, a, b, c) Lexa::Tree::Tree<Lexa::Interpreter::Token> name(std::move(a), std::move(b), std::move(c))
 #define EVAL(name, root) Lexa::Interpreter::Eval2D name(std::move(root))
-#define FLOAT_EQ(a, b) abs(a - b) < 0.000001
+#define FLOAT_EQ(a, b) (abs(a - b) < 0.001f)
 
 namespace InterpreterTest
 {

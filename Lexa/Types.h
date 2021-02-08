@@ -57,6 +57,7 @@ namespace Lexa
 		using Function = float(*)(float);
 		const std::unordered_map<std::string, Function> StrToFunction
 		{
+			{"sqrt", sqrt},
 			{"exp", exp},
 			{"log", log},
 			{"ln", log},

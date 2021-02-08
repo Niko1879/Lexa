@@ -45,7 +45,7 @@ namespace Lexa
 		void _CheckImplicitMultiplication(std::vector<Token>& tokens, size_t index)
 		{
 			if (_LookAhead(tokens, index,
-				[](const Token& t) {return t.type == TokenType::Variable || t.type == TokenType::LeftBracket; })
+				[](const Token& t) {return t.type == TokenType::Variable || t.type == TokenType::LeftBracket || t.type == TokenType::Function; })
 )
 			{
 				tokens.insert(tokens.begin() + index + 1, Token{ TokenType::BinaryOperation, "*" });
@@ -83,10 +83,9 @@ namespace Lexa
 				switch (t.type)
 				{
 				case TokenType::Number:
-					_CheckImplicitMultiplication(tokens, i);
-
-				case TokenType::Variable:
 				case TokenType::MathConstant:
+				case TokenType::Variable:
+					_CheckImplicitMultiplication(tokens, i);
 					partialTrees.emplace_back(t);
 					break;
 
@@ -133,7 +132,8 @@ namespace Lexa
 						break;
 					}
 					stack.pop_back(); //pop the left bracket
-					if (stack.size() > 0 && stack.back().type == TokenType::Function) _Pop(partialTrees, stack); //pop function
+					if (stack.size() > 0 && stack.back().type == TokenType::Function) 
+						if(!_Pop(partialTrees, stack)) fail = true; //pop function
 					break;
 
 				default:

@@ -37,6 +37,7 @@
     <ClInclude Include="InterpreterTestDefs.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IntegrationTests.cpp" />
     <ClCompile Include="TestEval.cpp" />
     <ClCompile Include="TestLexer.cpp" />
     <ClCompile Include="pch.cpp">

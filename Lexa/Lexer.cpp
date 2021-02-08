@@ -4,24 +4,27 @@ namespace Lexa
 {
 	namespace Interpreter
 	{		
-		std::vector<Token> _TokeniseChars(std::stringstream& charbuf, std::vector<Token>& tokens)
+		void _TokeniseChars(std::stringstream& charbuf, std::vector<Token>& tokens)
 		{
-			std::string chars = charbuf.str();
-			charbuf.str("");
-			charbuf.clear();
-			if (StrToFunction.find(chars) != StrToFunction.end())
-				tokens.push_back(Token{ TokenType::Function, chars });
-
-			else if (StrToMathConstant.find(chars) != StrToMathConstant.end())
-				tokens.push_back(Token{ TokenType::MathConstant, chars });
-
-			else
+			while (!charbuf.str().empty())
 			{
-				for (char c : chars)
-					tokens.push_back(Token{ TokenType::Variable, std::string(1, c) });
-			}
+				std::string chars = charbuf.str();
+				charbuf.str("");
+				charbuf.clear();
+				if (StrToFunction.find(chars) != StrToFunction.end())
+					tokens.push_back(Token{ TokenType::Function, chars });
 
-			return tokens;
+				else if (StrToMathConstant.find(chars) != StrToMathConstant.end())
+					tokens.push_back(Token{ TokenType::MathConstant, chars });
+
+				else
+				{
+					char var = chars[0];
+					tokens.push_back(Token{ TokenType::Variable, std::string(1, var) });
+					for (size_t i = 1; i < chars.size(); ++i)
+						charbuf << chars[i];
+				}
+			}
 		}
 		
 		
