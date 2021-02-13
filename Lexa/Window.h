@@ -11,6 +11,8 @@ namespace Lexa
 		Window(unsigned int width, unsigned int height);
 		~Window();
 
+		void Clear();
+
 		void Refresh();
 
 	private:
