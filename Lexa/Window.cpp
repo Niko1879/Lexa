@@ -15,6 +15,7 @@ namespace Lexa
 		glfwMakeContextCurrent(window);
 		glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	Window::~Window()

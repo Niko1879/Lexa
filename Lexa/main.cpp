@@ -13,7 +13,6 @@ int main()
 {
 	//test
 	Lexa::Window window(1920, 1080);
-	glEnable(GL_DEPTH_TEST);
 	unsigned int shader = Lexa::Shader::CreateShader("Surface.vs", "Surface.fs");
 	auto tokens = Interpreter::Tokenise("x^2 + y^2");
 	auto pTree = Interpreter::Parse(tokens);
