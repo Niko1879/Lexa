@@ -2,6 +2,8 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <glad\glad.h>
+#include "GLFW/glfw3.h"
 
 namespace Lexa
 {
