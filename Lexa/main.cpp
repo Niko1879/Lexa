@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "Surface.h"
+#include "SurfaceRenderer.h"
 #include "Shader.h"
 #include "Lexer.h"
 #include "Parser.h"
@@ -17,13 +17,14 @@ int main()
 	auto tokens = Interpreter::Tokenise("x^2 + y^2");
 	auto pTree = Interpreter::Parse(tokens);
 	auto eval = Interpreter::Eval2D(pTree);
-	Lexa::Surface surface(std::move(eval), shader);
-	surface.Generate(-0.5f, 0.5f, -0.5f, 0.5f, 0.01f);
+	Lexa::SurfaceRenderer renderer(std::move(eval));
+	renderer.Generate();
+	renderer.Rotate(0.5f, 0.0f, 0.0f);
 
 	while (true)
 	{  
 		window.Clear();
-		surface.Draw();
+		renderer.Draw();
 		window.Refresh();
 	}
 }

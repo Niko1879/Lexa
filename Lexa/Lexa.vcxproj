@@ -159,7 +159,7 @@
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="SurfaceRenderer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -170,7 +170,7 @@
   <ItemGroup>
     <ClInclude Include="IO.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Surface.h" />
+    <ClInclude Include="SurfaceRenderer.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

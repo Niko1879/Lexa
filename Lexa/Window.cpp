@@ -31,7 +31,6 @@ namespace Lexa
 
 	void Window::Refresh()
 	{
-
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
