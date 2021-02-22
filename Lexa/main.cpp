@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "SurfaceRenderer.h"
+#include "Surface.h"
 #include "Shader.h"
 #include "Lexer.h"
 #include "Parser.h"
@@ -12,19 +12,19 @@
 int main()
 {
 	//test
-	Lexa::Window window(1920, 1080);
+	Lexa::Window::Init(800, 600);
+
+
 	unsigned int shader = Lexa::Shader::CreateShader("Surface.vs", "Surface.fs");
-	auto tokens = Interpreter::Tokenise("x^2 + y^2");
+	auto tokens = Interpreter::Tokenise("sin(x) + cos(y)");
 	auto pTree = Interpreter::Parse(tokens);
 	auto eval = Interpreter::Eval2D(pTree);
-	Lexa::SurfaceRenderer renderer(std::move(eval));
-	renderer.Generate();
-	renderer.Rotate(0.5f, 0.0f, 0.0f);
-
+	Lexa::Surface renderer(std::move(eval), -2.0f, 2.0f, -2.0f, 2.0f, 0.1f);
+	Lexa::Camera::SetCenterOfRotation(renderer.GetCentroid());
 	while (true)
 	{  
-		window.Clear();
-		renderer.Draw();
-		window.Refresh();
+		Lexa::Window::Clear();
+		renderer.Draw(Lexa::Camera::View(), Lexa::Camera::Projection(), Lexa::Camera::Direction());
+		Lexa::Window::Refresh();
 	}
 }
