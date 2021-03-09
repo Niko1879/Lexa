@@ -16,7 +16,7 @@ int main()
 
 
 	unsigned int shader = Lexa::Shader::CreateShader("Surface.vs", "Surface.fs");
-	auto tokens = Interpreter::Tokenise("sin(x) + cos(y)");
+	auto tokens = Interpreter::Tokenise("x^2 + y^2");
 	auto pTree = Interpreter::Parse(tokens);
 	auto eval = Interpreter::Eval2D(pTree);
 	Lexa::Surface renderer(std::move(eval), -2.0f, 2.0f, -2.0f, 2.0f, 0.1f);

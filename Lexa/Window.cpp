@@ -22,7 +22,7 @@ namespace Lexa
 
 		void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 		{
-			glViewport(0, 0, width, height);
+			glViewport(0, 0, 0.8*width, 0.8*height);
 			Camera::OnWindowResize(width, height);
 		}
 
