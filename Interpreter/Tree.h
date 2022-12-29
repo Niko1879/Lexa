@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
-#include "Debug.h"
 #include <iostream>
 #include <vector>
+
+#include "Debug.h"
 
 
 namespace Tree

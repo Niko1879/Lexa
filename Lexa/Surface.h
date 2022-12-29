@@ -1,10 +1,7 @@
 #pragma once
-#include "SurfaceRenderData.h"
 #include "Eval.h"
 #include "glm/glm.hpp"
-#include <glm/gtc/type_ptr.hpp>
-#include <unordered_map>
-
+#include "VertexBuffer.h"
 
 
 namespace Lexa
@@ -16,16 +13,17 @@ namespace Lexa
 
 		void Resize(float xmin, float xmax, float ymin, float ymax, float step);
 
-		void Draw(const glm::mat4& view, const glm::mat4& proj, const glm::vec3& cameraDirection);
-
 		const glm::vec3& GetCentroid() const;
 
 	private:
 		void Generate();
-		Interpreter::Eval2D eval;
-		SurfaceRenderData renderData;
-		float xmin, xmax, ymin, ymax;
-		float step;
-		glm::vec3 centroid;
+		
+		VertexBuffer m_vao;
+		unsigned m_indexCount;
+		
+		Interpreter::Eval2D m_eval;
+		float m_xmin, m_xmax, m_ymin, m_ymax;
+		float m_step;
+		glm::vec3 m_centroid;
 	};
 }

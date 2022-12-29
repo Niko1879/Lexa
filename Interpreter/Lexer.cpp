@@ -1,8 +1,61 @@
+#include <unordered_set>
+#include <sstream>
+
 #include "Lexer.h"
 
 
 namespace Interpreter
-{		
+{
+	static const std::unordered_set<std::string> s_BinaryOperations
+	{
+		"+",
+		"-",
+		"*",
+		"/",
+		"^"
+	};
+
+
+	static const std::unordered_set<std::string> s_MathFunctions
+	{
+		"sqrt",
+		"exp",
+		"log",
+		"ln",
+		"sin",
+		"cos",
+		"tan",
+		"sec",
+		"cosec",
+		"cot",
+		"sinh",
+		"cosh",
+		"tanh",
+		"sech",
+		"cosech",
+		"coth",
+		"arcsin",
+		"arccos",
+		"arctan",
+		"arcsec",
+		"arccosec",
+		"arccot",
+		"arsinh",
+		"arcosh",
+		"artanh",
+		"arsech",
+		"arcosech",
+		"artanh",
+	};
+
+
+	static const std::unordered_set<std::string> s_MathConstants
+	{
+		"e",
+		"pi",
+	};
+
+
 	void _TokeniseChars(std::stringstream& charbuf, std::vector<Token>& tokens)
 	{
 		while (!charbuf.str().empty())
@@ -10,10 +63,10 @@ namespace Interpreter
 			std::string chars = charbuf.str();
 			charbuf.str("");
 			charbuf.clear();
-			if (StrToFunction.find(chars) != StrToFunction.end())
+			if (s_MathFunctions.find(chars) != s_MathFunctions.end())
 				tokens.push_back(Token{ TokenType::Function, chars });
 
-			else if (StrToMathConstant.find(chars) != StrToMathConstant.end())
+			else if (s_MathConstants.find(chars) != s_MathConstants.end())
 				tokens.push_back(Token{ TokenType::MathConstant, chars });
 
 			else
@@ -65,7 +118,7 @@ namespace Interpreter
 			if (isspace(curr))
 				continue;
 
-			if (StrToBinaryOperation.find(curr_s) != StrToBinaryOperation.end())
+			if (s_BinaryOperations.find(curr_s) != s_BinaryOperations.end())
 				tokens.push_back(Token{ TokenType::BinaryOperation, curr_s });
 
 			else if (curr == '(')

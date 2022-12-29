@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -131,7 +131,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\repos\Lexa\Lexa\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/verbose:lib</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,6 +157,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="RenderState.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="Textbox.cpp" />
+    <ClCompile Include="TextManager.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureAtlas.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="WindowEventManager.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="main.cpp" />
@@ -170,10 +179,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="RenderState.h" />
+    <ClInclude Include="RenderTarget.h" />
+    <ClInclude Include="Textbox.h" />
+    <ClInclude Include="TextManager.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureAtlas.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="WindowEventManager.h" />
     <ClInclude Include="IO.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Surface.h" />
-    <ClInclude Include="SurfaceRenderData.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

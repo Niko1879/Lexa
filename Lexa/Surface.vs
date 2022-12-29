@@ -11,7 +11,6 @@ uniform vec3 cameraDirection;
 void main()
 {
     gl_Position = projection*view*model*vec4(aPos, 1.0f);
-    //intensity = max(0.0f, dot(-cameraDirection, normal));
     intensity = max(dot(cameraDirection, normal), dot(-cameraDirection, normal));
     intensity = 0.3 + 0.4*intensity;
 }

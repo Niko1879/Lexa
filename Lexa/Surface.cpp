@@ -15,8 +15,9 @@ namespace Lexa
 			z += vertices[i + 2];
 		}
 
-		return glm::vec3(x / n, y /n, z / n);
+		return glm::vec3(x / n, y / n, z / n);
 	}
+
 
 	std::vector<float> ComputeNormals(const std::vector<float>& vertices, const std::vector<unsigned int>& indices)
 	{
@@ -67,61 +68,56 @@ namespace Lexa
 
 		return vertexNormals;
 	}
+
 	
 	Surface::Surface(Interpreter::Eval2D&& eval, float xmin, float xmax, float ymin, float ymax, float step) 
-		: eval(std::move(eval)),
-		  xmin(xmin),
-		  xmax(xmax),
-		  ymin(ymin),
-		  ymax(ymax),
-		  step(step)
+		: m_eval(std::move(eval)),
+		  m_xmin(xmin),
+		  m_xmax(xmax),
+		  m_ymin(ymin),
+		  m_ymax(ymax),
+		  m_step(step)
 	{
+		m_vao.AddProperty(3);
+		m_vao.AddProperty(3);
 		Generate();
 	}
+
 
 	void Surface::Resize(float xmin, float xmax, float ymin, float ymax, float step)
 	{
-		this->xmin = xmin;
-		this->xmax = xmax;
-		this->ymin = ymin;
-		this->ymax = ymax;
-		this->step = step;
+		m_xmin = xmin;
+		m_xmax = xmax;
+		m_ymin = ymin;
+		m_ymax = ymax;
+		m_step = step;
 		Generate();
 	}
 
-	void Surface::Draw(const glm::mat4& view, const glm::mat4& proj, const glm::vec3& cameraDirection)
-	{
-		glUseProgram(renderData.shaderId);
-		glUniformMatrix4fv(renderData.modelLoc, 1, GL_FALSE, glm::value_ptr(renderData.model));
-		glUniformMatrix4fv(renderData.viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(renderData.projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-		glUniform3fv(renderData.cameraDirectionLoc, 1, glm::value_ptr(cameraDirection));
-		glBindVertexArray(renderData.VAO);
-		glDrawElements(GL_TRIANGLES, renderData.indices.size(), GL_UNSIGNED_INT, 0);
-	}
 
 	const glm::vec3& Surface::GetCentroid() const
 	{
-		return centroid;
+		return m_centroid;
 	}
+
 
 	void Surface::Generate()
 	{
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
-		float tolerance = step / 10.0f;
-		for (float x = xmin; x < xmax + tolerance; x += step)
+		float tolerance = m_step / 10.0f;
+		for (float x = m_xmin; x < m_xmax + tolerance; x += m_step)
 		{
-			for (float y = ymin; y < ymax + tolerance; y += step)
+			for (float y = m_ymin; y < m_ymax + tolerance; y += m_step)
 			{
 				vertices.push_back(x);
 				vertices.push_back(y);
-				vertices.push_back(eval(x, y));
+				vertices.push_back(m_eval(x, y));
 			}
 		}
 
-		size_t xCount = round((xmax - xmin) / step);
-		size_t yCount = round((ymax - ymin) / step);
+		size_t xCount = round((m_xmax - m_xmin) / m_step);
+		size_t yCount = round((m_ymax - m_ymin) / m_step);
 		++xCount;
 		++yCount;
 
@@ -138,7 +134,7 @@ namespace Lexa
 			}
 		}
 
-		centroid = ComputeCentroid(vertices, 3);
+		m_centroid = ComputeCentroid(vertices, 3);
 		std::vector<float> normals = ComputeNormals(vertices, indices);
 
 		//interlace normals with vertices
@@ -153,12 +149,9 @@ namespace Lexa
 			vertexAttributes.push_back(normals[i + 2]);
 		}
 
-		renderData.vertices = vertexAttributes;
-		renderData.indices = indices;
-		glBindVertexArray(renderData.VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, renderData.VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * renderData.vertices.size(), renderData.vertices.data(), GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderData.EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * renderData.indices.size(), renderData.indices.data(), GL_STATIC_DRAW);
+		m_indexCount = indices.size();
+		//m_vao.Bind();
+		m_vao.AddData(vertexAttributes);
+		m_vao.AddIndices(indices);
 	}
 }

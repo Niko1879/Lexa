@@ -3,6 +3,16 @@
 
 namespace Interpreter
 {
+	const static std::unordered_map<std::string, int> OperatorPrecedence
+	{
+		{"-", 0},
+		{"+", 0},
+		{"*", 1},
+		{"/", 1},
+		{"^", 2},
+	};
+
+
 	bool _Pop(std::vector<ParseTree>& pTrees, std::vector<Token>& stack)
 	{
 		if (pTrees.size() < 1 ||

@@ -1,18 +1,16 @@
 #pragma once
+#include <string>
 #include <variant>
+
 #include "Tree.h"
 #include "Token.h"
-#include "Types.h"
-#include <string>
 
 
 namespace Interpreter
 {	
 	class Eval2D
 	{
-		using ParseTree = Tree::Tree<Token>;
-		using Node = std::variant<Number, Variable, BinaryOperation, Function>;
-		using ExprTree = Tree::Tree<Node>;
+		using ParseTree = Tree::Tree<Interpreter::Token>;
 
 	public:
 		Eval2D(const ParseTree& tree);
@@ -20,6 +18,9 @@ namespace Interpreter
 		float operator()(float x, float y) const;
 
 	private:
+		using Node = std::variant<float, std::string, float(*)(float, float), float(*)(float)>;
+		using ExprTree = Tree::Tree<Node>;
+
 		ExprTree MakeEval(const ParseTree& tree) const;
 
 		float Eval(const ExprTree& expr, float x, float y) const;

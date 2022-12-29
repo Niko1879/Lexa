@@ -30,10 +30,10 @@
     <ClInclude Include="Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Types.h">
+    <ClInclude Include="Eval.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Eval.h">
+    <ClInclude Include="MathConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -145,10 +145,10 @@
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Eval.h" />
     <ClInclude Include="Lexer.h" />
+    <ClInclude Include="MathConstants.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Tree.h" />
-    <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Eval.cpp" />

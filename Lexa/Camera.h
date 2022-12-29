@@ -1,30 +1,67 @@
 #pragma once
-#include "glm/glm.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include "GLFW/glfw3.h"
+#include <memory>
 
+#include "glm/glm.hpp"
+#include "WindowEventManager.h"
+#include "Window.h"
 
 namespace Lexa
 {
-	namespace Camera
+	class Camera
 	{
-		const glm::mat4& Projection();
+	public:
+		Camera(const std::shared_ptr<Window>& window);
 
-		const glm::mat4& View();
+		const glm::mat4& GetProjection() const;
 
-		glm::vec3 Direction();
+		const glm::mat4& GetView() const;
 
-		void Init(float width, float height);
+		glm::vec3 GetDirection() const;
 
 		void SetCenterOfRotation(const glm::vec3& vec);
 
-		void OnWindowResize(float width, float height);
+		void SetContext(const std::shared_ptr<Window>& window);
 
-		void OnScroll(float dz);
+	private:
+		void UpdateZoom(double dz);
 
-		void OnDrag(float dx, float dy);
+		void UpdatePosition();
 
+		void UpdateProjectionMatrix(int width, int height);
 
-	}
+		glm::mat4 m_projection;
+		glm::mat4 m_view;
+		glm::vec3 m_cameraPos;
+		glm::vec3 m_cameraTarget;
+		glm::vec3 m_cameraZ;
+		glm::vec3 m_cameraX;
+		glm::vec3 m_cameraY;
+
+		struct OnScroll : public ScrollCallback
+		{
+			OnScroll(Camera& camera);
+			void Execute(double dx, double dy) override;
+			Camera& m_parent;
+		};
+		std::shared_ptr<ScrollCallback> m_onScroll;
+
+		struct OnWindowRefresh : public FrameCallback
+		{
+			OnWindowRefresh(Camera& camera);
+			void Execute() override;
+			Camera& m_parent;
+		};
+		std::shared_ptr<FrameCallback> m_onWindowRefresh;
+
+		struct OnWindowResize : public WindowResizeCallback
+		{
+			OnWindowResize(Camera& camera);
+			void Execute(int width, int height) override;
+			Camera& m_parent;
+		};
+		std::shared_ptr<WindowResizeCallback> m_onWindowResize;
+
+		std::weak_ptr<Window> m_context;
+	};
 }
 

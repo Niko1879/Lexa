@@ -1,10 +1,21 @@
 #pragma once
 #include <unordered_map>
 #include <ostream>
-#include "Types.h"
+
 
 namespace Interpreter
 {
+	enum class TokenType
+	{
+		Number,
+		BinaryOperation,
+		LeftBracket,
+		RightBracket,
+		Variable,
+		Function,
+		MathConstant,
+	};
+
 	struct Token
 	{
 		TokenType type;

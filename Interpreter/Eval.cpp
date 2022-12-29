@@ -1,3 +1,5 @@
+#include "MathConstants.h"
+
 #include "Eval.h"
 
 
@@ -5,7 +7,7 @@ namespace Interpreter
 {
 	Eval2D::Eval2D(const ParseTree& tree) : expr(MakeEval(tree))
 	{
-		std::vector<Token> vars = Tree::FindUnique(tree, [](const Token& t) {return t.type == TokenType::Variable; });
+		std::vector<Interpreter::Token> vars = Tree::FindUnique(tree, [](const Interpreter::Token& t) {return t.type == Interpreter::TokenType::Variable; });
 		if (vars.size() != 2) throw std::invalid_argument("Expected expression with 2 variables.");
 		X = vars[0].value;
 		Y = vars[1].value;
@@ -24,20 +26,20 @@ namespace Interpreter
 		
 		switch (tree.Data().type)
 		{
-		case TokenType::Number:
+		case Interpreter::TokenType::Number:
 			return ExprTree(Node(stof(val)));
 
-		case TokenType::MathConstant:
-			return ExprTree(Node(StrToMathConstant.at(val)));
+		case Interpreter::TokenType::MathConstant:
+			return ExprTree(Node(g_StrToMathConstant.at(val)));
 
-		case TokenType::Variable:
+		case Interpreter::TokenType::Variable:
 			return ExprTree(Node(val));
 
-		case TokenType::Function:
-			return ExprTree(Node(StrToFunction.at(val)), MakeEval(tree.Left()), true);
+		case Interpreter::TokenType::Function:
+			return ExprTree(Node(g_StrToFunction.at(val)), MakeEval(tree.Left()), true);
 
-		case TokenType::BinaryOperation:
-			return ExprTree(Node(StrToBinaryOperation.at(val)), MakeEval(tree.Left()), MakeEval(tree.Right()));
+		case Interpreter::TokenType::BinaryOperation:
+			return ExprTree(Node(g_StrToBinaryOperation.at(val)), MakeEval(tree.Left()), MakeEval(tree.Right()));
 
 		default:
 			throw std::invalid_argument("Unexpected token in AST: " + val);
@@ -53,7 +55,7 @@ namespace Interpreter
 			return std::get<BinaryOperation>(n) (Eval(expr.Left(), x, y), Eval(expr.Right(), x, y));
 		}
 
-		else if (std::holds_alternative<Variable>(n))
+		else if (std::holds_alternative<std::string>(n))
 		{
 			return (std::get<std::string>(n) == X) ? x : y;
 		}
@@ -65,7 +67,7 @@ namespace Interpreter
 
 		else
 		{
-			return std::get<Number>(n);
+			return std::get<float>(n);
 		}
 	}
 }
