@@ -4,28 +4,22 @@
 
 namespace Lexa
 {
-	static std::weak_ptr<WindowEventManager> s_CurrentEventManager;
-
-
 	void GLFWFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 	{
 		glViewport(0, 0, width, height);
-		if (!s_CurrentEventManager.expired())
-			s_CurrentEventManager.lock()->HandleWindowResizeCallbacks(width, height);
+		((WindowEventManager*)glfwGetWindowUserPointer(window))->HandleWindowResizeCallbacks(width, height);
 	}
 
 
 	void GLFWScrollCallback(GLFWwindow* window, double dx, double dy)
 	{
-		if (!s_CurrentEventManager.expired())
-			s_CurrentEventManager.lock()->HandleScrollCallbacks(dx, dy);
+		((WindowEventManager*)glfwGetWindowUserPointer(window))->HandleScrollCallbacks(dx, dy);
 	}
 
 
 	void GLFWMouseClickCallback(GLFWwindow* window, int button, int action, int mods)
 	{
-		if (!s_CurrentEventManager.expired())
-			s_CurrentEventManager.lock()->HandleMouseButtonCallbacks(button, action, mods);
+		((WindowEventManager*)glfwGetWindowUserPointer(window))->HandleMouseButtonCallbacks(button, action, mods);
 	}
 
 
@@ -33,8 +27,9 @@ namespace Lexa
 	{
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		if (!s_CurrentEventManager.expired())
-			s_CurrentEventManager.lock()->HandleFrameCallbacks();
+		
+		((WindowEventManager*)glfwGetWindowUserPointer(window))->HandleFrameCallbacks();
+		
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
@@ -75,15 +70,13 @@ namespace Lexa
 			return ret;
 		};
 
-		if (!s_CurrentEventManager.expired())
-			s_CurrentEventManager.lock()->HandleCharacterCallbacks(utf8convert(static_cast<char32_t>(codepoint)));
+		((WindowEventManager*)glfwGetWindowUserPointer(window))->HandleCharacterCallbacks(utf8convert(static_cast<char32_t>(codepoint)));
 	}
 
 
 	Window::Window(int width, int height) : m_window(nullptr, [](GLFWwindow* ptr) {glfwDestroyWindow(ptr); }),
 										    m_width(width),
 											m_height(height),
-										    m_eventManager(std::make_shared<WindowEventManager>()),
 											m_onNextFrame(new OnWindowRefresh(*this)),
 											m_onWindowResize(new OnWindowResize(*this)),
 											m_onMouseClick(new OnMouseClick(*this)),
@@ -96,9 +89,9 @@ namespace Lexa
 			MakeCurrent();
 		}
 
-		m_eventManager->AddWindowResizeCallback(m_onWindowResize);
-		m_eventManager->AddMouseButtonCallback(m_onMouseClick);
-		m_eventManager->AddFrameCallback(m_onNextFrame);
+		m_eventManager.AddWindowResizeCallback(m_onWindowResize);
+		m_eventManager.AddMouseButtonCallback(m_onMouseClick);
+		m_eventManager.AddFrameCallback(m_onNextFrame);
 	}
 
 
@@ -106,7 +99,7 @@ namespace Lexa
 	{
 		glfwMakeContextCurrent(m_window.get());
 		SetCallbacks();
-		s_CurrentEventManager = m_eventManager;
+		glfwSetWindowUserPointer(m_window.get(), &m_eventManager);
 	}
 
 
@@ -148,31 +141,31 @@ namespace Lexa
 
 	void Window::AddWindowResizeCallback(const std::shared_ptr<WindowResizeCallback>& callback)
 	{
-		m_eventManager->AddWindowResizeCallback(callback);
+		m_eventManager.AddWindowResizeCallback(callback);
 	}
 
 
 	void Window::AddScrollCallback(const std::shared_ptr<ScrollCallback>& callback)
 	{
-		m_eventManager->AddScrollCallback(callback);
+		m_eventManager.AddScrollCallback(callback);
 	}
 
 
 	void Window::AddMouseButtonCallback(const std::shared_ptr<MouseButtonCallback>& callback)
 	{
-		m_eventManager->AddMouseButtonCallback(callback);
+		m_eventManager.AddMouseButtonCallback(callback);
 	}
 
 
 	void Window::AddFrameCallback(const std::shared_ptr<FrameCallback>& callback)
 	{
-		m_eventManager->AddFrameCallback(callback);
+		m_eventManager.AddFrameCallback(callback);
 	}
 
 
 	void Window::AddCharacterCallback(const std::shared_ptr<CharacterCallback>& callback)
 	{
-		m_eventManager->AddCharacterCallback(callback);
+		m_eventManager.AddCharacterCallback(callback);
 	}
 
 

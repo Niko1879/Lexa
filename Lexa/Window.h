@@ -35,7 +35,7 @@ namespace Lexa
 		void AddCharacterCallback(const std::shared_ptr<CharacterCallback>& callback);
 
 	private:
-		std::shared_ptr<WindowEventManager> m_eventManager;
+		WindowEventManager m_eventManager;
 
 		struct OnWindowResize : public WindowResizeCallback
 		{
