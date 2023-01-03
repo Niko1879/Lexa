@@ -21,6 +21,7 @@
 #include "RenderState.h"
 #include "Textbox.h"
 #include "Camera.h"
+#include "InputManager.h"
 
 using namespace Lexa;
 
@@ -28,9 +29,9 @@ int main()
 {
 
     glfwInit();
-    std::shared_ptr<Window> window = std::make_shared<Window>(1024, 512);
-    window->MakeCurrent();
-    Camera camera(window);
+    Window window(1024, 512);
+    window.MakeCurrent();
+    Camera camera;
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
     glEnable(GL_CULL_FACE);
@@ -41,21 +42,14 @@ int main()
     TextManager t;
     t.AddFont("Niko", "times.ttf", 48);
 
-    TextureAtlas p = t.GetFont("Niko", 48);
+    const TextureAtlas& p = t.GetFont("Niko", 48);
 
     auto& rs = RenderState::Instance();
 
-    Textbox tb(400, 100, 0, 0, window);
+    Textbox tb(400, 100, 0, 0);
 
     std::shared_ptr<VertexBuffer> vao = std::make_shared<VertexBuffer>(std::vector<int>{2});
 
-    //std::vector<float> vertices
-    //{
-    //    0.f, 0.f,                 //bottomleft
-    //    0.f, (float)tb.GetHeight(),                                  //topleft
-    //    (float)tb.GetWidth(), (float)tb.GetHeight(),                  //topright,
-    //    (float)tb.GetWidth(), 0.f  //bottomright
-    //};
 
     std::vector<float> vertices
     {
@@ -78,6 +72,8 @@ int main()
 
     std::shared_ptr<Shader> s1 = std::make_shared<Shader>("Quad.vs", "Quad.fs");
     std::shared_ptr<Shader> s2 = std::make_shared<Shader>("Default.vs", "Default.fs");
+
+    InputManager im;
 
 
     while (true)
@@ -104,7 +100,7 @@ int main()
         for (char c : text)
         {
             auto tc = p.GetTexCoords(std::string(1, c));
-            
+
             //bottomleft
             d.push_back(xpos);
             d.push_back(ypos);
@@ -113,18 +109,18 @@ int main()
 
             //topleft
             d.push_back(xpos);
-            d.push_back(ypos + yinc);
+            d.push_back(ypos + tc.height);
             d.push_back(tc.topLeftU);
             d.push_back(tc.topLeftV);
 
             //topright
-            d.push_back(xpos + xinc);
-            d.push_back(ypos + yinc);
+            d.push_back(xpos + tc.width);
+            d.push_back(ypos + tc.height);
             d.push_back(tc.topRightU);
             d.push_back(tc.topRightV);
 
             //bottomright
-            d.push_back(xpos + xinc);
+            d.push_back(xpos + tc.width);
             d.push_back(ypos);
             d.push_back(tc.bottomRightU);
             d.push_back(tc.bottomRightV);
@@ -138,7 +134,7 @@ int main()
             i.push_back(2 + k);
 
             k += 4;
-            xpos += xinc;
+            xpos += tc.width;
         }
 
         vao2->AddData(d);
@@ -146,6 +142,11 @@ int main()
 
         rs.Draw();
 
-        window->Update();
+        window.Update();
+        auto m_cursor = im.GetCursor();
+        auto m_text = im.GetText();
+        tb.Update(m_cursor.m_leftMouseDown, m_cursor.m_x, m_cursor.m_y, m_text);
+        im.Update();
+        
     }
 }

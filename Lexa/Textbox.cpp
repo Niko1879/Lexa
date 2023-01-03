@@ -1,21 +1,17 @@
-#include "TextManager.h"
 #include "Textbox.h"
 
 
 namespace Lexa
 {
-	Textbox::Textbox(int width, int height, int x, int y, const std::shared_ptr<Window>& context) :
+	Textbox::Textbox(int width, int height, int x, int y) :
 		m_width(width), 
 		m_height(height), 
 		m_active(false),
 		m_x(x),
 		m_y(y),
-		m_context(context),
-		m_text(""),
-		m_OnKeyPress(new OnKeyPress(*this)),
-		m_OnMouseClick(new OnMouseClick(*this))
+		m_text("")
 	{
-		SetContext(context);
+
 	}
 
 
@@ -43,38 +39,16 @@ namespace Lexa
 	}
 
 
-	void Textbox::SetContext(const std::shared_ptr<Window>& window)
+	void Textbox::Update(bool mouseDown, float cursorX, float cursorY, const std::string& text)
 	{
-		window->AddMouseButtonCallback(m_OnMouseClick);
-		window->AddCharacterCallback(m_OnKeyPress);
-
-		m_context = window;
-	}
-
-
-	Textbox::OnMouseClick::OnMouseClick(Textbox& parent) : m_parent(parent) {}
-
-
-	void Textbox::OnMouseClick::Execute(int button, int action, int mods)
-	{
-		if (button == GLFW_MOUSE_BUTTON_LEFT)
+		if (mouseDown)
 		{
-			std::shared_ptr<Window> context = m_parent.m_context.lock();
-			std::pair<float, float> cursorPos = context->GetCursorPos();
-
-			m_parent.UpdateActive(cursorPos.first, cursorPos.second);
+			UpdateActive(cursorX, cursorY);
 		}
-	}
 
-
-	Textbox::OnKeyPress::OnKeyPress(Textbox& parent) : m_parent(parent) {}
-
-
-	void Textbox::OnKeyPress::Execute(std::string ch)
-	{
-		if (m_parent.m_active)
+		if (m_active)
 		{
-			m_parent.m_text += ch;
+			m_text += text;
 		}
 	}
 

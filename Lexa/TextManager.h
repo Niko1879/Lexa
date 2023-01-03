@@ -21,8 +21,18 @@ namespace Lexa
 
 		const TextureAtlas& GetFont(const std::string& font, unsigned size) const;
 
+		struct CharInfo
+		{
+			int advance;
+			int bearingX;
+			int bearingY;
+		};
+
+		const CharInfo& GetCharInfo(const std::string& font, unsigned size, char c);
+
 	private:
 		std::unordered_map<unsigned, std::unordered_map<std::string, TextureAtlas>> m_fonts;
+		std::unordered_map<unsigned, std::unordered_map<std::string, std::unordered_map<char, CharInfo>>> m_charInfo;
 		static std::unique_ptr<std::remove_pointer<FT_Library>::type, void(*)(FT_Library)> s_FtLibrary;
 	};
 }

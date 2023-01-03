@@ -2,15 +2,14 @@
 #include <memory>
 
 #include "glm/glm.hpp"
-#include "WindowEventManager.h"
-#include "Window.h"
+
 
 namespace Lexa
 {
 	class Camera
 	{
 	public:
-		Camera(const std::shared_ptr<Window>& window);
+		Camera();
 
 		const glm::mat4& GetProjection() const;
 
@@ -20,12 +19,12 @@ namespace Lexa
 
 		void SetCenterOfRotation(const glm::vec3& vec);
 
-		void SetContext(const std::shared_ptr<Window>& window);
+		void Update(int scrWidth, int scrHeight, float cursorDeltaX, float cursorDeltaY, float scrollDelta);
 
 	private:
 		void UpdateZoom(double dz);
 
-		void UpdatePosition();
+		void UpdatePosition(float dx, float dy);
 
 		void UpdateProjectionMatrix(int width, int height);
 
@@ -36,32 +35,6 @@ namespace Lexa
 		glm::vec3 m_cameraZ;
 		glm::vec3 m_cameraX;
 		glm::vec3 m_cameraY;
-
-		struct OnScroll : public ScrollCallback
-		{
-			OnScroll(Camera& camera);
-			void Execute(double dx, double dy) override;
-			Camera& m_parent;
-		};
-		std::shared_ptr<ScrollCallback> m_onScroll;
-
-		struct OnWindowRefresh : public FrameCallback
-		{
-			OnWindowRefresh(Camera& camera);
-			void Execute() override;
-			Camera& m_parent;
-		};
-		std::shared_ptr<FrameCallback> m_onWindowRefresh;
-
-		struct OnWindowResize : public WindowResizeCallback
-		{
-			OnWindowResize(Camera& camera);
-			void Execute(int width, int height) override;
-			Camera& m_parent;
-		};
-		std::shared_ptr<WindowResizeCallback> m_onWindowResize;
-
-		std::weak_ptr<Window> m_context;
 	};
 }
 

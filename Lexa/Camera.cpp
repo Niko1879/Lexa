@@ -6,20 +6,16 @@
 
 namespace Lexa
 {
-	Camera::Camera(const std::shared_ptr<Window>& window) :
+	Camera::Camera() :
 		m_projection(1.0f),
 		m_view(1.0f),
 		m_cameraPos(0.0f, 0.0f, 0.0f),
 		m_cameraTarget(0.0f, 0.0f, 0.0f),
 		m_cameraZ(0.0f, 0.0f, 1.0f),
 		m_cameraX(1.0f, 0.0f, 0.0f),
-		m_cameraY(0.0f, 1.0f, 0.0f),
-		m_context(window),
-		m_onScroll(new OnScroll(*this)),
-		m_onWindowRefresh(new OnWindowRefresh(*this)),
-		m_onWindowResize(new OnWindowResize(*this))
+		m_cameraY(0.0f, 1.0f, 0.0f)
 	{
-		SetContext(window);
+
 	}
 
 
@@ -47,46 +43,11 @@ namespace Lexa
 	}
 
 
-	void Camera::SetContext(const std::shared_ptr<Window>& window)
+	void Camera::Update(int scrWidth, int scrHeight, float cursorDeltaX, float cursorDeltaY, float scrollDelta)
 	{
-		UpdateProjectionMatrix(window->GetWidth(), window->GetHeight());
-		UpdateZoom(-3.f);
-
-		window->AddScrollCallback(m_onScroll);
-		window->AddFrameCallback(m_onWindowRefresh);
-		window->AddWindowResizeCallback(m_onWindowResize);
-
-		m_context = window;
-	}
-
-
-	Camera::OnScroll::OnScroll(Camera& camera) : m_parent(camera) {}
-
-
-	void Camera::OnScroll::Execute(double dx, double dy)
-	{
-		m_parent.UpdateZoom(dy);
-	}
-
-
-	Camera::OnWindowRefresh::OnWindowRefresh(Camera& camera) : m_parent(camera) {}
-
-
-	void Camera::OnWindowRefresh::Execute()
-	{
-		if (m_parent.m_context.lock()->GetMouseDown())
-		{
-			m_parent.UpdatePosition();
-		}
-	}
-
-
-	Camera::OnWindowResize::OnWindowResize(Camera& camera) : m_parent(camera) {}
-
-
-	void Camera::OnWindowResize::Execute(int width, int height)
-	{
-		m_parent.UpdateProjectionMatrix(width, height);
+		UpdateZoom(scrollDelta);
+		UpdatePosition(cursorDeltaX, cursorDeltaY);
+		UpdateProjectionMatrix(scrWidth, scrHeight);
 	}
 
 
@@ -98,12 +59,8 @@ namespace Lexa
 	}
 
 
-	void Camera::UpdatePosition()
+	void Camera::UpdatePosition(float dx, float dy)
 	{
-		std::pair<float, float> cursordelta = m_context.lock()->GetCursorDelta();
-		float dx = cursordelta.first;
-		float dy = cursordelta.second;
-
 		float thetaX = glm::radians(-dx);
 		float thetaY = glm::radians(-dy);
 		glm::mat4 id(1.0f);

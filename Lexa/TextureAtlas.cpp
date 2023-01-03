@@ -86,9 +86,20 @@ namespace Lexa
     }
 
 
-    const TextureAtlas::TextureCoordinates& TextureAtlas::GetTexCoords(const std::string& name) const
+    const TextureAtlas::TextureInfo& TextureAtlas::GetTexCoords(const std::string& name) const
     {
         return m_texCoords.at(name);
+    }
+
+
+    int TextureAtlas::GetPerTexWidth() const
+    {
+        return m_perTexWidth;
+    }
+
+    int TextureAtlas::GetperTextHeight() const
+    {
+        return m_perTexHeight;
     }
 
 
@@ -135,7 +146,7 @@ namespace Lexa
     }
 
 
-    TextureAtlas::TextureCoordinates TextureAtlas::GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos)
+    TextureAtlas::TextureInfo TextureAtlas::GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos)
     {
         auto f = [](float x) {return (x + 1.f) / 2.f; };
 
@@ -144,6 +155,9 @@ namespace Lexa
         forwardxpos = f(forwardxpos);
         forwardypos = f(forwardypos);
 
-        return TextureCoordinates{ xpos, ypos, forwardxpos, ypos, xpos, forwardypos, forwardxpos, forwardypos };
+        float width = forwardxpos - xpos;
+        float height = forwardypos - ypos;
+
+        return TextureInfo{width, height, xpos, ypos, forwardxpos, ypos, xpos, forwardypos, forwardxpos, forwardypos };
     }
 }

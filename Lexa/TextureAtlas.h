@@ -14,8 +14,10 @@ namespace Lexa
 	public:
 		TextureAtlas(std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
 
-		struct TextureCoordinates
+		struct TextureInfo
 		{
+			float width;
+			float height;
 			float bottomLeftU;
 			float bottomLeftV;
 			float bottomRightU;
@@ -28,15 +30,19 @@ namespace Lexa
 
 		const std::shared_ptr<Texture>& GetTexture() const;
 
-		const TextureCoordinates& GetTexCoords(const std::string& name) const;
+		const TextureInfo& GetTexCoords(const std::string& name) const;
+
+		int GetPerTexWidth() const;
+
+		int GetperTextHeight() const;
 
 	private:
 		std::shared_ptr<Texture> Create(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
 
-		TextureCoordinates GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos);
+		TextureInfo GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos);
 
 		std::shared_ptr<Texture> m_tex;
-		std::unordered_map<std::string, TextureCoordinates> m_texCoords;
+		std::unordered_map<std::string, TextureInfo> m_texCoords;
 		int m_perTexWidth;
 		int m_perTexHeight;
 
