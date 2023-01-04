@@ -23,12 +23,16 @@ namespace Lexa
 	private:
 		void UpdateActive(float x, float y);
 
+		void UpdateCursorPos(bool leftArrowDown);
+
 		std::string m_text;
 		int m_width;
 		int m_height;
 		int m_x;
 		int m_y;
 		bool m_active;
+		int m_pos;
+		int m_perCharWidth;
 	};
 }
 

@@ -66,4 +66,13 @@ namespace Lexa
 			m_active = false;
 		}
 	}
+
+
+	void Textbox::UpdateCursorPos(bool leftArrowDown)
+	{
+		if (leftArrowDown)
+		{
+			m_pos += m_perCharWidth;
+		}
+	}
 }

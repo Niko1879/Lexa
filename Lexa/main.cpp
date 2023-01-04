@@ -93,13 +93,19 @@ int main()
         std::vector<float> d;
         std::vector<unsigned> i;
         float xpos = -1.f;
-        float ypos = -1.f;
+        float ypos = -0.98f;
         float xinc = 0.0439;
         float yinc = 0.0878;
         int k = 0;
         for (char c : text)
         {
             auto tc = p.GetTexCoords(std::string(1, c));
+
+            auto xd = t.GetCharInfo("Niko", 48, c);
+            float dix = xd.yOffset / (float)window.GetHeight();
+
+            float oldy = ypos;
+            ypos = ypos - dix;
 
             //bottomleft
             d.push_back(xpos);
@@ -134,7 +140,8 @@ int main()
             i.push_back(2 + k);
 
             k += 4;
-            xpos += tc.width;
+            xpos += (float)xd.xOffset / (float)window.GetWidth();
+            ypos = oldy;
         }
 
         vao2->AddData(d);

@@ -52,9 +52,9 @@ namespace Lexa
                 data.push_back(_raw[i]);
             }
 
-            std::string name(1, c);
-            characters[name] = std::make_shared<Texture>(width, height, Texture::Format::RGBA, data);
-            m_charInfo[size][name][c] = CharInfo{ face->glyph->advance.x, face->glyph->bitmap_left, face->glyph->bitmap_top };
+            std::string ch(1, c);
+            characters[ch] = std::make_shared<Texture>(width, height, Texture::Format::RGBA, data);
+            m_charInfo[size][name][c] = CharInfo{face->glyph->advance.x >> 6, height - face->glyph->bitmap_top};
         }
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);

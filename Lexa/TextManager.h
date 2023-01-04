@@ -23,9 +23,8 @@ namespace Lexa
 
 		struct CharInfo
 		{
-			int advance;
-			int bearingX;
-			int bearingY;
+			int xOffset;
+			int yOffset;
 		};
 
 		const CharInfo& GetCharInfo(const std::string& font, unsigned size, char c);
