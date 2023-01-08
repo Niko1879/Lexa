@@ -11,6 +11,16 @@ namespace Lexa
 	}
 
 
+	void GLFWKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		if (key == GLFW_KEY_BACKSPACE && (action == GLFW_PRESS || action == GLFW_REPEAT))
+		{
+			InputManager::Data* p = (InputManager::Data*)(glfwGetWindowUserPointer(window));
+			p->m_text = "\b";
+		}
+	}
+
+
 	void GLFWCharacterCallback(GLFWwindow* window, unsigned codepoint)
 	{
 		auto utf8convert = [](char32_t utf)
@@ -83,6 +93,7 @@ namespace Lexa
 			glfwSetWindowUserPointer(window, &m_data);
 			glfwSetCharCallback(window, GLFWCharacterCallback);
 			glfwSetScrollCallback(window, GLFWScrollCallback);
+			glfwSetKeyCallback(window, GLFWKeyCallback);
 		}
 	}
 

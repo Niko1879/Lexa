@@ -16,8 +16,8 @@ namespace Lexa
 
 		struct TextureInfo
 		{
-			float width;
-			float height;
+			int width;
+			int height;
 			float bottomLeftU;
 			float bottomLeftV;
 			float bottomRightU;
@@ -30,7 +30,7 @@ namespace Lexa
 
 		const std::shared_ptr<Texture>& GetTexture() const;
 
-		const TextureInfo& GetTexCoords(const std::string& name) const;
+		const TextureInfo& GetTextureData(const std::string& name) const;
 
 		int GetPerTexWidth() const;
 
@@ -39,7 +39,7 @@ namespace Lexa
 	private:
 		std::shared_ptr<Texture> Create(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
 
-		TextureInfo GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos);
+		TextureInfo GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos, int width, int height);
 
 		std::shared_ptr<Texture> m_tex;
 		std::unordered_map<std::string, TextureInfo> m_texCoords;

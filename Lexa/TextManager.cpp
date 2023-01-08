@@ -54,7 +54,7 @@ namespace Lexa
 
             std::string ch(1, c);
             characters[ch] = std::make_shared<Texture>(width, height, Texture::Format::RGBA, data);
-            m_charInfo[size][name][c] = CharInfo{face->glyph->advance.x >> 6, height - face->glyph->bitmap_top};
+            m_charInfo[size][name][ch] = CharInfo{face->glyph->advance.x >> 6, height - face->glyph->bitmap_top};
         }
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
@@ -74,7 +74,7 @@ namespace Lexa
     }
 
 
-    const TextManager::CharInfo& TextManager::GetCharInfo(const std::string& font, unsigned size, char c)
+    const TextManager::CharInfo& TextManager::GetCharInfo(const std::string& font, unsigned size, const std::string& c) const
     {
         return m_charInfo.at(size).at(font).at(c);
     }

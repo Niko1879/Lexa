@@ -28,7 +28,7 @@ namespace Lexa
 		m_vao.reset(new GLuint(vao));
 
 		RenderState& rs = RenderState::Instance();
-		std::weak_ptr<VertexBuffer> oldVao = rs.GetVertexBuffer();
+		std::weak_ptr<const VertexBuffer> oldVao = rs.GetVertexBuffer();
 		
 		glBindVertexArray(*m_vao);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufs[1]);
@@ -53,7 +53,7 @@ namespace Lexa
 
 	void VertexBuffer::AddData(const std::vector<float>& data)
 	{
-		std::weak_ptr<VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
+		std::weak_ptr<const VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
 		bool isCurrent = !activeVao.expired() && *activeVao.lock()->m_vao == *m_vao;
 
 		if (!isCurrent)
@@ -72,7 +72,7 @@ namespace Lexa
 
 	void VertexBuffer::AddIndices(const std::vector<GLuint>& indices)
 	{
-		std::weak_ptr<VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
+		std::weak_ptr<const VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
 		bool isCurrent = !activeVao.expired() && *activeVao.lock()->m_vao == *m_vao;
 
 		if (!isCurrent)
@@ -98,7 +98,7 @@ namespace Lexa
 
 	void VertexBuffer::GenerateAttribPointer(GLint size)
 	{
-		std::weak_ptr<VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
+		std::weak_ptr<const VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
 		bool isCurrent = !activeVao.expired() && *activeVao.lock()->m_vao == *m_vao;
 
 		if (!isCurrent)

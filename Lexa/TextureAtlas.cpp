@@ -18,7 +18,7 @@ namespace Lexa
 
         std::weak_ptr<RenderTarget> oldRt = rs.GetRenderTarget();
         std::weak_ptr<Texture> oldTex = rs.GetTexture();
-        std::weak_ptr<VertexBuffer> oldVao = rs.GetVertexBuffer();
+        std::weak_ptr<const VertexBuffer> oldVao = rs.GetVertexBuffer();
         std::weak_ptr<Shader> oldShader = rs.GetShader();
 
         rs.SetVertexBuffer(vao);
@@ -48,7 +48,7 @@ namespace Lexa
             float forwardxpos = xpos + 2.f * tex->GetWidth() / m_tex->GetWidth();
             float forwardypos = ypos + 2.f * tex->GetHeight() / m_tex->GetHeight();
 
-            m_texCoords[name] = GenTexCoord(xpos, ypos, forwardxpos, forwardypos);
+            m_texCoords[name] = GenTexCoord(xpos, ypos, forwardxpos, forwardypos, tex->GetWidth(), tex->GetHeight());
 
             std::vector<float> data
             {
@@ -86,7 +86,7 @@ namespace Lexa
     }
 
 
-    const TextureAtlas::TextureInfo& TextureAtlas::GetTexCoords(const std::string& name) const
+    const TextureAtlas::TextureInfo& TextureAtlas::GetTextureData(const std::string& name) const
     {
         return m_texCoords.at(name);
     }
@@ -146,7 +146,7 @@ namespace Lexa
     }
 
 
-    TextureAtlas::TextureInfo TextureAtlas::GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos)
+    TextureAtlas::TextureInfo TextureAtlas::GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos, int width, int height)
     {
         auto f = [](float x) {return (x + 1.f) / 2.f; };
 
@@ -154,9 +154,6 @@ namespace Lexa
         ypos = f(ypos);
         forwardxpos = f(forwardxpos);
         forwardypos = f(forwardypos);
-
-        float width = forwardxpos - xpos;
-        float height = forwardypos - ypos;
 
         return TextureInfo{width, height, xpos, ypos, forwardxpos, ypos, xpos, forwardypos, forwardxpos, forwardypos };
     }

@@ -21,6 +21,12 @@ namespace Lexa
 	}
 
 
+	void RenderTarget::Bind() const
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, *m_frameBuffer);
+	}
+
+
 	const std::shared_ptr<Texture>& RenderTarget::GetTexture() const
 	{
 		return m_renderTarget;
@@ -32,10 +38,7 @@ namespace Lexa
 		GLuint frameBuffer;
 		glGenFramebuffers(1, &frameBuffer);
 		m_frameBuffer.reset(new GLuint(frameBuffer));
-		RenderState& rs = RenderState::Instance();
-		std::weak_ptr<RenderTarget> oldRt = rs.GetRenderTarget();
 		glBindFramebuffer(GL_FRAMEBUFFER, *m_frameBuffer);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, *m_renderTarget->m_id, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, oldRt.expired() ? 0 : *oldRt.lock()->m_frameBuffer);
 	}
 }

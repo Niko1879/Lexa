@@ -17,17 +17,15 @@ namespace Lexa
 
 		glm::vec3 GetDirection() const;
 
+		void SetProjection(int width, int height);
+
 		void SetCenterOfRotation(const glm::vec3& vec);
 
-		void Update(int scrWidth, int scrHeight, float cursorDeltaX, float cursorDeltaY, float scrollDelta);
+		void Rotate(float x, float y);
+
+		void Zoom(float z);
 
 	private:
-		void UpdateZoom(double dz);
-
-		void UpdatePosition(float dx, float dy);
-
-		void UpdateProjectionMatrix(int width, int height);
-
 		glm::mat4 m_projection;
 		glm::mat4 m_view;
 		glm::vec3 m_cameraPos;

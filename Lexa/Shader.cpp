@@ -65,4 +65,10 @@ namespace Lexa
 	{
 		return glGetUniformLocation(*m_id, name.c_str());
 	}
+
+
+	void Shader::Bind() const
+	{
+		glUseProgram(*m_id);
+	}
 }

@@ -23,15 +23,6 @@ namespace Lexa
 	}
 
 
-	void Window::Update()
-	{
-		glfwSwapBuffers(m_window.get());
-		glfwPollEvents();
-		UpdateWindowSize();
-		Clear();
-	}
-
-
 	int Window::GetWidth() const
 	{
 		return m_width;
@@ -44,10 +35,8 @@ namespace Lexa
 	}
 
 
-	void Window::UpdateWindowSize()
+	void Window::SetDimensions(int width, int height)
 	{
-		int width, height;
-		glfwGetFramebufferSize(m_window.get(), &width, &height);
 		m_width = width;
 		m_height = height;
 		glViewport(0, 0, m_width, m_height);

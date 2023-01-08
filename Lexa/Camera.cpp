@@ -43,26 +43,18 @@ namespace Lexa
 	}
 
 
-	void Camera::Update(int scrWidth, int scrHeight, float cursorDeltaX, float cursorDeltaY, float scrollDelta)
+	void Camera::Zoom(float dz)
 	{
-		UpdateZoom(scrollDelta);
-		UpdatePosition(cursorDeltaX, cursorDeltaY);
-		UpdateProjectionMatrix(scrWidth, scrHeight);
-	}
-
-
-	void Camera::UpdateZoom(double dz)
-	{
-		glm::vec3 inc = (float)dz * m_cameraZ;
+		glm::vec3 inc = dz * m_cameraZ;
 		m_cameraPos -= inc;
 		m_view = glm::translate(m_view, inc);
 	}
 
 
-	void Camera::UpdatePosition(float dx, float dy)
+	void Camera::Rotate(float x, float yy)
 	{
-		float thetaX = glm::radians(-dx);
-		float thetaY = glm::radians(-dy);
+		float thetaX = glm::radians(-x);
+		float thetaY = glm::radians(-y);
 		glm::mat4 id(1.0f);
 		id = glm::rotate(id, thetaY, m_cameraX);
 		id = glm::rotate(id, thetaX, m_cameraY);
@@ -81,7 +73,7 @@ namespace Lexa
 	}
 
 
-	void Camera::UpdateProjectionMatrix(int width, int height)
+	void Camera::SetProjection(int width, int height)
 	{
 		m_projection = glm::perspective(glm::radians(45.0f), ((float)width) / height, 0.1f, 100.0f);
 	}

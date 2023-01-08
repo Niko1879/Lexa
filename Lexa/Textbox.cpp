@@ -3,13 +3,17 @@
 
 namespace Lexa
 {
-	Textbox::Textbox(int width, int height, int x, int y) :
+	Textbox::Textbox(int width, int height, int x, int y, const std::string& font, int fontSize) :
 		m_width(width), 
 		m_height(height), 
 		m_active(false),
 		m_x(x),
 		m_y(y),
-		m_text("")
+		m_text(""),
+		m_font(font),
+		m_fontSize(fontSize),
+		m_cursorIdx(0),
+		m_totalTextWidth(0)
 	{
 
 	}
@@ -39,40 +43,86 @@ namespace Lexa
 	}
 
 
-	void Textbox::Update(bool mouseDown, float cursorX, float cursorY, const std::string& text)
+	const std::string& Textbox::GetFont() const
 	{
-		if (mouseDown)
-		{
-			UpdateActive(cursorX, cursorY);
-		}
-
-		if (m_active)
-		{
-			m_text += text;
-		}
+		return m_font;
 	}
 
 
-	void Textbox::UpdateActive(float x, float y)
+	int Textbox::GetFontSize() const
 	{
-		if (m_x <= x && x <= m_x + m_width &&
-			m_y <= y && y <= m_y + m_height)
+		return m_fontSize;
+	}
+
+
+	void Textbox::SetActive(bool active)
+	{
+		m_active = active;
+	}
+
+
+	void Textbox::SetCursorPos(float x, float y)
+	{
+		int cumulative = 0;
+		int idx = 0;
+
+		for (int i : m_charWidths)
 		{
-			m_active = true;
+			cumulative += i;
+			++idx;
+			if (cumulative > x)
+			{
+				int prev = cumulative - i;
+				if (x - prev < cumulative - x)
+				{
+					--idx;
+				}
+				break;
+			}
+		}
+
+		m_cursorIdx = idx;
+	}
+
+
+	void Textbox::AddText(const std::string& text, const TextManager& textManager)
+	{
+		if (text.empty())
+			return;
+
+		std::string left = m_text.substr(0, m_cursorIdx);
+		std::string right = m_cursorIdx >= m_text.size() ? "" : m_text.substr(m_cursorIdx);
+
+		auto it = m_charWidths.begin();
+
+		if (text == "\b")
+		{
+			if (!left.empty())
+			{
+				left.pop_back();
+				int idx = std::min((unsigned long long)m_cursorIdx, m_charWidths.size() - 1);
+				std::advance(it, idx);
+				m_charWidths.erase(it);
+				--m_cursorIdx;
+			}
 		}
 
 		else
 		{
-			m_active = false;
+			left += text;
+			int x = textManager.GetCharInfo(m_font, m_fontSize, text).xOffset;
+			std::advance(it, m_cursorIdx);
+			if (it == m_charWidths.end())
+			{
+				m_charWidths.push_back(x);
+			}
+			else
+			{
+				m_charWidths.insert(it, x);
+			}
+			++m_cursorIdx;
 		}
-	}
 
-
-	void Textbox::UpdateCursorPos(bool leftArrowDown)
-	{
-		if (leftArrowDown)
-		{
-			m_pos += m_perCharWidth;
-		}
+		m_text = left + right;
 	}
 }

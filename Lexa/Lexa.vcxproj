@@ -162,6 +162,7 @@
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Textbox.cpp" />
     <ClCompile Include="TextManager.cpp" />
+    <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureAtlas.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -169,7 +170,7 @@
     <ClCompile Include="IO.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Surface.cpp" />
+    <ClCompile Include="SurfaceRenderer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,12 +185,13 @@
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Textbox.h" />
     <ClInclude Include="TextManager.h" />
+    <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureAtlas.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="IO.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Surface.h" />
+    <ClInclude Include="SurfaceRenderer.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

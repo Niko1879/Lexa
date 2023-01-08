@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <list>
+#include "TextManager.h"
 
 
 namespace Lexa
@@ -8,7 +10,7 @@ namespace Lexa
 	class Textbox
 	{
 	public:
-		Textbox(int width, int height, int x, int y);
+		Textbox(int width, int height, int x, int y, const std::string& font, int fontSize);
 
 		const std::string& GetText() const;
 
@@ -18,21 +20,28 @@ namespace Lexa
 
 		std::pair<int, int> GetPosition() const;
 
-		void Update(bool mouseDown, float cursorX, float cursorY, const std::string& text);
+		const std::string& GetFont() const;
+
+		int GetFontSize() const;
+
+		void SetActive(bool active);
+
+		void SetCursorPos(float x, float y);
+
+		void AddText(const std::string& text, const TextManager& textManager);
 
 	private:
-		void UpdateActive(float x, float y);
-
-		void UpdateCursorPos(bool leftArrowDown);
-
 		std::string m_text;
+		std::string m_font;
+		int m_fontSize;
 		int m_width;
 		int m_height;
 		int m_x;
 		int m_y;
+		int m_cursorIdx;
 		bool m_active;
-		int m_pos;
-		int m_perCharWidth;
+		std::list<int> m_charWidths;
+		int m_totalTextWidth;
 	};
 }
 

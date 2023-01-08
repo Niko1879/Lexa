@@ -17,6 +17,8 @@ namespace Lexa
 
 		const std::shared_ptr<Texture>& GetTexture() const;
 
+		void Bind() const;
+
 	private:
 		void InitFramebuffer();
 

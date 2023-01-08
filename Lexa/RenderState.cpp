@@ -16,7 +16,7 @@ namespace Lexa
 	}
 
 
-	const std::weak_ptr<VertexBuffer>& RenderState::GetVertexBuffer() const
+	const std::weak_ptr<const VertexBuffer>& RenderState::GetVertexBuffer() const
 	{
 		return m_vertexBuffer;
 	}
@@ -40,11 +40,11 @@ namespace Lexa
 	}
 
 
-	void RenderState::SetVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)
+	void RenderState::SetVertexBuffer(std::shared_ptr<const VertexBuffer> vertexBuffer)
 	{
 		m_vertexBuffer = std::weak_ptr(vertexBuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer->m_bufs[0]);
-		glBindVertexArray(*vertexBuffer->m_vao);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer ? vertexBuffer->m_bufs[0] : 0);
+		glBindVertexArray(vertexBuffer ? *vertexBuffer->m_vao : 0);
 	}
 
 
@@ -69,11 +69,14 @@ namespace Lexa
 	}
 
 
-	void RenderState::Draw() const
+	void RenderState::Draw()
 	{
-		if (!m_vertexBuffer.expired())
+		RenderState& renderState = RenderState::Instance();
+		const std::weak_ptr<const VertexBuffer>& vb = renderState.GetVertexBuffer();
+
+		if (!vb.expired())
 		{
-			std::shared_ptr<VertexBuffer> vao = m_vertexBuffer.lock();
+			std::shared_ptr<const VertexBuffer> vao = vb.lock();
 			glDrawElements(GL_TRIANGLES, vao->GetSize(), GL_UNSIGNED_INT, 0);
 		}
 	}

@@ -27,11 +27,11 @@ namespace Lexa
 			int yOffset;
 		};
 
-		const CharInfo& GetCharInfo(const std::string& font, unsigned size, char c);
+		const CharInfo& GetCharInfo(const std::string& font, unsigned size, const std::string& c) const;
 
 	private:
 		std::unordered_map<unsigned, std::unordered_map<std::string, TextureAtlas>> m_fonts;
-		std::unordered_map<unsigned, std::unordered_map<std::string, std::unordered_map<char, CharInfo>>> m_charInfo;
+		std::unordered_map<unsigned, std::unordered_map<std::string, std::unordered_map<std::string, CharInfo>>> m_charInfo;
 		static std::unique_ptr<std::remove_pointer<FT_Library>::type, void(*)(FT_Library)> s_FtLibrary;
 	};
 }

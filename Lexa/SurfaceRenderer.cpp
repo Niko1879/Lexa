@@ -1,4 +1,4 @@
-#include "Surface.h"
+#include "SurfaceRenderer.h"
 
 namespace Lexa
 {
@@ -70,54 +70,37 @@ namespace Lexa
 	}
 
 	
-	Surface::Surface(Interpreter::Eval2D&& eval, float xmin, float xmax, float ymin, float ymax, float step) 
-		: m_eval(std::move(eval)),
-		  m_xmin(xmin),
-		  m_xmax(xmax),
-		  m_ymin(ymin),
-		  m_ymax(ymax),
-		  m_step(step)
+	SurfaceRenderer::SurfaceRenderer() 
+		: m_vao(std::make_shared<VertexBuffer>(std::vector<int>{3, 3})),
+		  m_centroid(0.f)
 	{
-		m_vao.AddProperty(3);
-		m_vao.AddProperty(3);
-		Generate();
+
 	}
 
 
-	void Surface::Resize(float xmin, float xmax, float ymin, float ymax, float step)
+	const VertexBuffer& SurfaceRenderer::GetGeometry() const
 	{
-		m_xmin = xmin;
-		m_xmax = xmax;
-		m_ymin = ymin;
-		m_ymax = ymax;
-		m_step = step;
-		Generate();
+		return m_vao;
 	}
 
 
-	const glm::vec3& Surface::GetCentroid() const
-	{
-		return m_centroid;
-	}
-
-
-	void Surface::Generate()
+	void SurfaceRenderer::Generate(const Interpreter::Eval2D& eval, float xmin, float xmax, float ymin, float ymax, float step)
 	{
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
-		float tolerance = m_step / 10.0f;
-		for (float x = m_xmin; x < m_xmax + tolerance; x += m_step)
+		float tolerance = step / 10.0f;
+		for (float x = xmin; x < xmax + tolerance; x += step)
 		{
-			for (float y = m_ymin; y < m_ymax + tolerance; y += m_step)
+			for (float y = ymin; y < ymax + tolerance; y += step)
 			{
 				vertices.push_back(x);
 				vertices.push_back(y);
-				vertices.push_back(m_eval(x, y));
+				vertices.push_back(eval(x, y));
 			}
 		}
 
-		size_t xCount = round((m_xmax - m_xmin) / m_step);
-		size_t yCount = round((m_ymax - m_ymin) / m_step);
+		size_t xCount = round((xmax - xmin) / step);
+		size_t yCount = round((ymax - ymin) / step);
 		++xCount;
 		++yCount;
 
@@ -149,9 +132,13 @@ namespace Lexa
 			vertexAttributes.push_back(normals[i + 2]);
 		}
 
-		m_indexCount = indices.size();
-		//m_vao.Bind();
 		m_vao.AddData(vertexAttributes);
 		m_vao.AddIndices(indices);
+	}
+
+
+	const glm::vec3& SurfaceRenderer::GetCentroid() const
+	{
+		return m_centroid;
 	}
 }

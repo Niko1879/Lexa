@@ -22,6 +22,10 @@
 #include "Textbox.h"
 #include "Camera.h"
 #include "InputManager.h"
+#include "TextRenderer.h"
+#include "SurfaceRenderer.h"
+#include <Parser.h>
+#include <Lexer.h>
 
 using namespace Lexa;
 
@@ -34,29 +38,35 @@ int main()
     Camera camera;
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+
+    const int FONT_SIZE = 36;
 
     TextManager t;
-    t.AddFont("Niko", "times.ttf", 48);
+    t.AddFont("Niko", "times.ttf", FONT_SIZE);
 
-    const TextureAtlas& p = t.GetFont("Niko", 48);
+    const TextureAtlas& p = t.GetFont("Niko", FONT_SIZE);
 
     auto& rs = RenderState::Instance();
 
-    Textbox tb(400, 100, 0, 0);
+    Textbox tb(400, 100, 0,0, "Niko", FONT_SIZE);
 
     std::shared_ptr<VertexBuffer> vao = std::make_shared<VertexBuffer>(std::vector<int>{2});
 
+    float xx = 2.f * tb.GetPosition().first / window.GetWidth() - 1.f;
+    float yy = 2.f * tb.GetPosition().second / window.GetHeight() - 1.f;
+    float XX = xx + 2.f * tb.GetWidth() / window.GetWidth();
+    float YY = yy + 2.f * tb.GetHeight() / window.GetHeight();
 
     std::vector<float> vertices
     {
-        -1.f, -1.f,                 //bottomleft
-        -1.f, -1.f + 2.f * (float)tb.GetHeight() / 512.f,                                  //topleft
-        -1.f + 2.f * (float)tb.GetWidth() / 1024.f, -1.f + 2.f * (float)tb.GetHeight() / 512.f,                  //topright,
-        -1.f + 2.f * (float)tb.GetWidth() / 1024.f, -1.f  //bottomright
+        xx, yy,              //bottomleft
+        xx, YY,                                  //topleft
+        XX, YY,                  //topright,
+        XX, yy  //bottomright
     };
 
     std::vector<unsigned> indices
@@ -68,13 +78,19 @@ int main()
     vao->AddData(vertices);
     vao->AddIndices(indices);
 
-    std::shared_ptr<VertexBuffer> vao2 = std::make_shared<VertexBuffer>(std::vector<int>{2, 2});
-
     std::shared_ptr<Shader> s1 = std::make_shared<Shader>("Quad.vs", "Quad.fs");
     std::shared_ptr<Shader> s2 = std::make_shared<Shader>("Default.vs", "Default.fs");
+    std::shared_ptr<Shader> s3 = std::make_shared<Shader>("Surface.vs", "Surface.fs");
 
     InputManager im;
 
+    TextRenderer abc;
+
+    std::shared_ptr<const VertexBuffer> vao2 = abc.GetGeometry();
+
+    SurfaceRenderer s;
+
+    std::shared_ptr<const VertexBuffer> vao3 = s.GetGeometry();
 
     while (true)
     {
@@ -89,71 +105,34 @@ int main()
         rs.SetTexture(p.GetTexture());
         rs.SetVertexBuffer(vao2);
         
-        auto text = tb.GetText();
-        std::vector<float> d;
-        std::vector<unsigned> i;
-        float xpos = -1.f;
-        float ypos = -0.98f;
-        float xinc = 0.0439;
-        float yinc = 0.0878;
-        int k = 0;
-        for (char c : text)
-        {
-            auto tc = p.GetTexCoords(std::string(1, c));
-
-            auto xd = t.GetCharInfo("Niko", 48, c);
-            float dix = xd.yOffset / (float)window.GetHeight();
-
-            float oldy = ypos;
-            ypos = ypos - dix;
-
-            //bottomleft
-            d.push_back(xpos);
-            d.push_back(ypos);
-            d.push_back(tc.bottomLeftU);
-            d.push_back(tc.bottomLeftV);
-
-            //topleft
-            d.push_back(xpos);
-            d.push_back(ypos + tc.height);
-            d.push_back(tc.topLeftU);
-            d.push_back(tc.topLeftV);
-
-            //topright
-            d.push_back(xpos + tc.width);
-            d.push_back(ypos + tc.height);
-            d.push_back(tc.topRightU);
-            d.push_back(tc.topRightV);
-
-            //bottomright
-            d.push_back(xpos + tc.width);
-            d.push_back(ypos);
-            d.push_back(tc.bottomRightU);
-            d.push_back(tc.bottomRightV);
-
-            i.push_back(2 + k);
-            i.push_back(1 + k);
-            i.push_back(0 + k);
-
-            i.push_back(0 + k);
-            i.push_back(3 + k);
-            i.push_back(2 + k);
-
-            k += 4;
-            xpos += (float)xd.xOffset / (float)window.GetWidth();
-            ypos = oldy;
-        }
-
-        vao2->AddData(d);
-        vao2->AddIndices(i);
+        abc.Update(tb, t, window);
 
         rs.Draw();
 
         window.Update();
-        auto m_cursor = im.GetCursor();
-        auto m_text = im.GetText();
-        tb.Update(m_cursor.m_leftMouseDown, m_cursor.m_x, m_cursor.m_y, m_text);
-        im.Update();
+        auto cursor = im.GetCursor();
+        auto text = im.GetText();
+        tb.Update(cursor.m_leftMouseDown, cursor.m_x, cursor.m_y, text, t);
         
+        try
+        {
+            auto eval = Interpreter::Eval2D(Interpreter::Parse(Interpreter::Tokenise(tb.GetText())));
+            s.Update(eval, -1.f, 1.f, -1.f, 1.f, 0.1f);
+            rs.SetShader(s3);
+            s3->SetUniformMatrix4fv("model", glm::mat4(1.f));
+            s3->SetUniformMatrix4fv("view", camera.GetView());
+            s3->SetUniformMatrix4fv("projection", camera.GetProjection());
+            s3->SetUniform3fv("cameraDirection", camera.GetDirection());
+
+            rs.SetVertexBuffer(vao3);
+            rs.Draw();
+        }
+        catch (...)
+        {
+
+        }
+
+        camera.Update(window.GetWidth(), window.GetHeight(), im.GetCursor().m_xdelta, im.GetCursor().m_ydelta, im.GetCursor().m_scrolldelta, im.GetCursor().m_leftMouseDown);
+        im.Update();
     }
 }

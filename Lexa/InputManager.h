@@ -16,12 +16,12 @@ namespace Lexa
 
 		struct Cursor
 		{
-			double m_x;
-			double m_y;
-			double m_xdelta;
-			double m_ydelta;
-			double m_scrolldelta;
-			bool m_leftMouseDown;
+			double x;
+			double y;
+			double xdelta;
+			double ydelta;
+			double scrolldelta;
+			bool leftMouseDown;
 		};
 
 		struct Data

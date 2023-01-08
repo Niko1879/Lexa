@@ -22,6 +22,8 @@ namespace Lexa
 
 		void SetUniformMatrix4fv(const std::string& name, const glm::mat4& mat);
 
+		void Bind() const;
+
 	private:
 		int GetUniformID(const std::string& name) const;
 		
