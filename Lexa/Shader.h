@@ -2,17 +2,15 @@
 
 #include <string>
 #include <memory>
+#include <glm/glm.hpp>
 
 #include "IO.h"
-#include "glm/glm.hpp"
 
 
 namespace Lexa
 {
 	class Shader
 	{
-		friend class RenderState;
-
 	public:
 		Shader(const std::string& vertexSrc, const std::string& fragSrc);
 

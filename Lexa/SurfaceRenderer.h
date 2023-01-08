@@ -1,6 +1,8 @@
 #pragma once
+
+#include <glm/glm.hpp>
+
 #include "Eval.h"
-#include "glm/glm.hpp"
 #include "VertexBuffer.h"
 
 

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vector>
 #include <memory>
 
@@ -7,9 +8,6 @@ namespace Lexa
 {
 	class Texture
 	{
-		friend class RenderTarget;
-		friend class RenderState;
-
 	public:
 		enum class Format
 		{
@@ -28,10 +26,11 @@ namespace Lexa
 
 		int GetHeight() const;
 
+		void Bind() const;
+
 	private:
 		std::unique_ptr<unsigned, void(*)(unsigned*)> m_id;
 		unsigned m_width;
 		unsigned m_height;
 	};
 }
-

@@ -1,15 +1,14 @@
 #pragma once
+
 #include <vector>
 #include <memory>
+#include <glad/glad.h>
 
-#include "glad/glad.h"
 
 namespace Lexa
 {
 	class VertexBuffer
 	{
-		friend class RenderState;
-
 	public:
 		enum class Format
 		{
@@ -21,13 +20,15 @@ namespace Lexa
 
 		VertexBuffer(std::vector<int> properties, Format format = Format::STATIC);
 
+		int GetSize() const;
+		
+		void SetVertexData(const std::vector<float>& data);
+		
+		void SetIndexData(const std::vector<unsigned>& indices);
+		
 		void AddProperty(int size);
 
-		void AddData(const std::vector<float>& data);
-
-		void AddIndices(const std::vector<unsigned>& indices);
-
-		int GetSize() const;
+		void Bind() const;
 
 	private:
 		void GenerateAttribPointer(int size);
@@ -39,4 +40,3 @@ namespace Lexa
 		unsigned m_format;
 	};
 }
-

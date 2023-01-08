@@ -45,8 +45,10 @@ int main()
 
     const int FONT_SIZE = 36;
 
+    std::shared_ptr<Shader> s1 = std::make_shared<Shader>("Quad.vs", "Quad.fs");
+
     TextManager t;
-    t.AddFont("Niko", "times.ttf", FONT_SIZE);
+    t.AddFont("Niko", "times.ttf", FONT_SIZE, *s1);
 
     const TextureAtlas& p = t.GetFont("Niko", FONT_SIZE);
 
@@ -75,10 +77,9 @@ int main()
         0, 3, 2
     };
 
-    vao->AddData(vertices);
-    vao->AddIndices(indices);
+    vao->SetVertexData(vertices);
+    vao->SetIndexData(indices);
 
-    std::shared_ptr<Shader> s1 = std::make_shared<Shader>("Quad.vs", "Quad.fs");
     std::shared_ptr<Shader> s2 = std::make_shared<Shader>("Default.vs", "Default.fs");
     std::shared_ptr<Shader> s3 = std::make_shared<Shader>("Surface.vs", "Surface.fs");
 
@@ -86,53 +87,57 @@ int main()
 
     TextRenderer abc;
 
-    std::shared_ptr<const VertexBuffer> vao2 = abc.GetGeometry();
+    const VertexBuffer& vao2 = abc.GetGeometry();
 
     SurfaceRenderer s;
 
-    std::shared_ptr<const VertexBuffer> vao3 = s.GetGeometry();
+    const VertexBuffer& vao3 = s.GetGeometry();
 
     while (true)
     {
         glm::mat4 casd(1.f);
-        rs.SetShader(s2);
+        s2->Bind();
         s2->SetUniformMatrix4fv("view", camera.GetView());
         s2->SetUniformMatrix4fv("projection", camera.GetProjection());
-        rs.SetVertexBuffer(vao);
-        rs.Draw();
+        vao->Bind();
+        rs.Draw(vao->GetSize());
 
-        rs.SetShader(s1);
-        rs.SetTexture(p.GetTexture());
-        rs.SetVertexBuffer(vao2);
+        s1->Bind();
+        p.GetTexture().Bind();
+        vao2.Bind();
         
-        abc.Update(tb, t, window);
+        abc.Generate(tb, t, window);
 
-        rs.Draw();
+        rs.Draw(vao2.GetSize());
 
-        window.Update();
         auto cursor = im.GetCursor();
         auto text = im.GetText();
-        tb.Update(cursor.m_leftMouseDown, cursor.m_x, cursor.m_y, text, t);
+        tb.SetActive(cursor.leftMouseDown);
+        tb.SetCursorPos(cursor.x, cursor.y);
+        tb.AddText(text, t);
         
         try
         {
             auto eval = Interpreter::Eval2D(Interpreter::Parse(Interpreter::Tokenise(tb.GetText())));
-            s.Update(eval, -1.f, 1.f, -1.f, 1.f, 0.1f);
-            rs.SetShader(s3);
+            s.Generate(eval, -1.f, 1.f, -1.f, 1.f, 0.1f);
+            s3->Bind();
             s3->SetUniformMatrix4fv("model", glm::mat4(1.f));
             s3->SetUniformMatrix4fv("view", camera.GetView());
             s3->SetUniformMatrix4fv("projection", camera.GetProjection());
             s3->SetUniform3fv("cameraDirection", camera.GetDirection());
 
-            rs.SetVertexBuffer(vao3);
-            rs.Draw();
+            vao3.Bind();
+            rs.Draw(vao3.GetSize());
         }
         catch (...)
         {
 
         }
 
-        camera.Update(window.GetWidth(), window.GetHeight(), im.GetCursor().m_xdelta, im.GetCursor().m_ydelta, im.GetCursor().m_scrolldelta, im.GetCursor().m_leftMouseDown);
+        camera.SetProjection(window.GetWidth(), window.GetHeight());
+        camera.Zoom(im.GetCursor().scrolldelta);
+        if (im.GetCursor().leftMouseDown)
+            camera.Rotate(im.GetCursor().xdelta, im.GetCursor().ydelta);
         im.Update();
     }
 }

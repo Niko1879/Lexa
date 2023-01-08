@@ -1,5 +1,6 @@
-#include "InputManager.h"
 #include <GLFW/glfw3.h>
+
+#include "InputManager.h"
 
 
 namespace Lexa
@@ -7,7 +8,7 @@ namespace Lexa
 	void GLFWScrollCallback(GLFWwindow* window, double dx, double dy)
 	{
 		InputManager::Data* p = (InputManager::Data*)(glfwGetWindowUserPointer(window));
-		p->m_cursor.m_scrolldelta = dy;
+		p->m_cursor.scrolldelta = dy;
 	}
 
 
@@ -74,6 +75,7 @@ namespace Lexa
 		return m_data.m_cursor;
 	}
 
+
 	const std::string& InputManager::GetText() const
 	{
 		return m_data.m_text;
@@ -106,13 +108,13 @@ namespace Lexa
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
 
-		double dx = m_data.m_cursor.m_x - x;
-		double dy = m_data.m_cursor.m_y - y;
+		double dx = m_data.m_cursor.x - x;
+		double dy = m_data.m_cursor.y - y;
 
-		m_data.m_cursor.m_x = x;
-		m_data.m_cursor.m_y = height - y;
-		m_data.m_cursor.m_xdelta = dx;
-		m_data.m_cursor.m_ydelta = dy;
+		m_data.m_cursor.x = x;
+		m_data.m_cursor.y = height - y;
+		m_data.m_cursor.xdelta = dx;
+		m_data.m_cursor.ydelta = dy;
 	}
 
 
@@ -121,12 +123,12 @@ namespace Lexa
 		int button = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1);
 		if (button == GLFW_PRESS)
 		{
-			m_data.m_cursor.m_leftMouseDown = true;
+			m_data.m_cursor.leftMouseDown = true;
 		}
 
 		else
 		{
-			m_data.m_cursor.m_leftMouseDown = false;
+			m_data.m_cursor.leftMouseDown = false;
 		}
 	}
 }

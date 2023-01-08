@@ -4,6 +4,7 @@
 #include "VertexBuffer.h"
 #include "RenderState.h"
 
+
 namespace Lexa
 {
 	static const std::unordered_map<VertexBuffer::Format, GLenum> s_Format
@@ -26,15 +27,9 @@ namespace Lexa
 
 		glGenVertexArrays(1, &vao);
 		m_vao.reset(new GLuint(vao));
-
-		RenderState& rs = RenderState::Instance();
-		std::weak_ptr<const VertexBuffer> oldVao = rs.GetVertexBuffer();
 		
 		glBindVertexArray(*m_vao);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufs[1]);
-		glBindVertexArray(oldVao.expired() ? 0 : *oldVao.lock()->m_vao);
-		
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, oldVao.expired() ? 0 : oldVao.lock()->m_bufs[1]);
 	}
 
 
@@ -45,68 +40,40 @@ namespace Lexa
 	}
 
 
-	void VertexBuffer::AddProperty(int size)
-	{
-		GenerateAttribPointer(size);
-	}
-
-
-	void VertexBuffer::AddData(const std::vector<float>& data)
-	{
-		std::weak_ptr<const VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
-		bool isCurrent = !activeVao.expired() && *activeVao.lock()->m_vao == *m_vao;
-
-		if (!isCurrent)
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, m_bufs[0]);
-		}
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * data.size(), data.data(), m_format);
-
-		if (!isCurrent)
-		{
-			glBindBuffer(GL_ARRAY_BUFFER, activeVao.expired() ? 0 : activeVao.lock()->m_bufs[0]);
-		}
-	}
-
-
-	void VertexBuffer::AddIndices(const std::vector<GLuint>& indices)
-	{
-		std::weak_ptr<const VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
-		bool isCurrent = !activeVao.expired() && *activeVao.lock()->m_vao == *m_vao;
-
-		if (!isCurrent)
-		{
-			glBindVertexArray(*m_vao);
-		}
-
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), m_format);
-		m_nindices = indices.size();
-
-		if (!isCurrent)
-		{
-			glBindVertexArray(activeVao.expired() ? 0 : *activeVao.lock()->m_vao);
-		}
-	}
-
-
 	int VertexBuffer::GetSize() const
 	{
 		return m_nindices;
 	}
 
 
+	void VertexBuffer::SetVertexData(const std::vector<float>& data)
+	{
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * data.size(), data.data(), m_format);
+	}
+
+
+	void VertexBuffer::SetIndexData(const std::vector<GLuint>& indices)
+	{
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), m_format);
+		m_nindices = indices.size();
+	}
+
+
+	void VertexBuffer::AddProperty(int size)
+	{
+		GenerateAttribPointer(size);
+	}
+
+
+	void VertexBuffer::Bind() const
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, m_bufs[0]);
+		glBindVertexArray(*m_vao);
+	}
+
+
 	void VertexBuffer::GenerateAttribPointer(GLint size)
 	{
-		std::weak_ptr<const VertexBuffer> activeVao = RenderState::Instance().GetVertexBuffer();
-		bool isCurrent = !activeVao.expired() && *activeVao.lock()->m_vao == *m_vao;
-
-		if (!isCurrent)
-		{
-			glBindVertexArray(*m_vao);
-			glBindBuffer(GL_ARRAY_BUFFER, m_bufs[0]);
-		}
-
 		m_attribPointerSizes.push_back(size);
 		GLint stride = std::accumulate(m_attribPointerSizes.begin(), m_attribPointerSizes.end(), 0);
 		GLint offset = stride - size;
@@ -118,12 +85,6 @@ namespace Lexa
 			size = m_attribPointerSizes[i];
 			offset -= size;
 			glVertexAttribPointer(--n_attribPtr, size, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(offset * sizeof(float)));
-		}
-
-		if (!isCurrent)
-		{
-			glBindVertexArray(activeVao.expired() ? 0 : *activeVao.lock()->m_vao);
-			glBindBuffer(GL_ARRAY_BUFFER, activeVao.expired() ? 0 : activeVao.lock()->m_bufs[0]);
 		}
 	}
 }

@@ -25,9 +25,6 @@ namespace Lexa
         GLuint id;
         glGenTextures(1, &id);
         m_id.reset(new GLuint(id));
-
-        RenderState& rs = RenderState::Instance();
-        std::weak_ptr<Texture> oldTex = rs.GetTexture();
         
         glBindTexture(GL_TEXTURE_2D, *m_id);
         
@@ -37,8 +34,6 @@ namespace Lexa
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexImage2D(GL_TEXTURE_2D, 0, glFormat, width, height, 0, glFormat, GL_UNSIGNED_BYTE, data.data());
         glGenerateMipmap(GL_TEXTURE_2D);
-        
-        glBindTexture(GL_TEXTURE_2D, oldTex.expired() ? 0 : *oldTex.lock()->m_id);
 	}
 
 
@@ -64,5 +59,11 @@ namespace Lexa
     int Texture::GetHeight() const
     {
         return m_height;
+    }
+
+
+    void Texture::Bind() const
+    {
+        glBindTexture(GL_TEXTURE_2D, *m_id);
     }
 }

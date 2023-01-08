@@ -3,7 +3,6 @@
 #include <unordered_map>
 
 #include "Texture.h"
-#include "RenderTarget.h"
 #include "Shader.h"
 
 
@@ -12,7 +11,7 @@ namespace Lexa
 	class TextureAtlas
 	{
 	public:
-		TextureAtlas(std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
+		TextureAtlas(const std::unordered_map<std::string, Texture>& textures, const Shader& shader);
 
 		struct TextureInfo
 		{
@@ -28,7 +27,7 @@ namespace Lexa
 			float topRightV;
 		};
 
-		const std::shared_ptr<Texture>& GetTexture() const;
+		const Texture& GetTexture() const;
 
 		const TextureInfo& GetTextureData(const std::string& name) const;
 
@@ -37,11 +36,11 @@ namespace Lexa
 		int GetperTextHeight() const;
 
 	private:
-		std::shared_ptr<Texture> Create(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
+		Texture Create(const std::unordered_map<std::string, Texture>& textures);
 
 		TextureInfo GenTexCoord(float xpos, float ypos, float forwardxpos, float forwardypos, int width, int height);
 
-		std::shared_ptr<Texture> m_tex;
+		Texture m_tex;
 		std::unordered_map<std::string, TextureInfo> m_texCoords;
 		int m_perTexWidth;
 		int m_perTexHeight;
@@ -49,4 +48,3 @@ namespace Lexa
 		static const int MAX_TEX_WIDTH = 1024;
 	};
 }
-

@@ -17,7 +17,7 @@ namespace Lexa
 	public:
 		TextManager();
 
-		void AddFont(const std::string& name, const std::string& path, unsigned size);
+		void AddFont(const std::string& name, const std::string& path, unsigned size, const Shader& shader);
 
 		const TextureAtlas& GetFont(const std::string& font, unsigned size) const;
 

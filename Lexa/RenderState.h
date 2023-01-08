@@ -1,10 +1,4 @@
 #pragma once
-#include <memory>
-
-#include "VertexBuffer.h"
-#include "Shader.h"
-#include "RenderTarget.h"
-#include "Texture.h"
 
 
 namespace Lexa
@@ -14,7 +8,7 @@ namespace Lexa
 	public:
 		static RenderState& Instance();
 
-		void Draw();
+		void Draw(unsigned count);
 
 	private:
 		RenderState();
@@ -28,4 +22,3 @@ namespace Lexa
 		RenderState& operator=(RenderState&& other) = delete;
 	};
 }
-

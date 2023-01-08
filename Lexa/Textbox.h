@@ -44,4 +44,3 @@ namespace Lexa
 		int m_totalTextWidth;
 	};
 }
-

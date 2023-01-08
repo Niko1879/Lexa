@@ -1,54 +1,49 @@
-#include <glad/glad.h>
 #include <algorithm> 
 
 #include "VertexBuffer.h"
-#include "TextureAtlas.h"
 #include "RenderState.h"
+#include "RenderTarget.h"
+#include "TextureAtlas.h"
 
 
 namespace Lexa
 {
-	TextureAtlas::TextureAtlas(std::unordered_map<std::string, std::shared_ptr<Texture>>& textures) : m_tex(Create(textures))
+	TextureAtlas::TextureAtlas(const std::unordered_map<std::string, Texture>& textures, const Shader& shader) 
+        : m_tex(Create(textures))
 	{
-        std::shared_ptr<VertexBuffer> vao = std::make_shared<VertexBuffer>(std::vector<int>{2, 2}, VertexBuffer::Format::DYNAMIC);
-        std::shared_ptr<RenderTarget> rt = std::make_shared<RenderTarget>(m_tex);
-        std::shared_ptr<Shader> shader = std::make_shared<Shader>("Quad.vs", "Quad.fs");
-
+        static VertexBuffer vao(std::vector<int>{2, 2}, VertexBuffer::Format::DYNAMIC);
+        RenderTarget rt;
+        rt.SetTarget(m_tex);
         RenderState& rs = RenderState::Instance();
 
-        std::weak_ptr<RenderTarget> oldRt = rs.GetRenderTarget();
-        std::weak_ptr<Texture> oldTex = rs.GetTexture();
-        std::weak_ptr<const VertexBuffer> oldVao = rs.GetVertexBuffer();
-        std::weak_ptr<Shader> oldShader = rs.GetShader();
+        rt.Bind();
+        shader.Bind();
+        vao.Bind();
 
-        rs.SetVertexBuffer(vao);
-        rs.SetRenderTarget(rt);
-        rs.SetShader(shader);
-
-        std::vector<unsigned> indices
+        static std::vector<unsigned> indices
         {
            3, 1, 0,
            0, 2, 3
         };
-        vao->AddIndices(indices);
+        vao.SetIndexData(indices);
 
-        float xinc = 2.f * (float)m_perTexWidth / m_tex->GetWidth();
-        float yinc = 2.f * (float)m_perTexHeight / m_tex->GetHeight();
+        float xinc = 2.f * (float)m_perTexWidth / m_tex.GetWidth();
+        float yinc = 2.f * (float)m_perTexHeight / m_tex.GetHeight();
 
         float xpos = -1.f;
         float ypos = -1.f;
 
-        for (std::pair<const std::string, std::shared_ptr<Texture>>& p : textures)
+        for (const std::pair<const std::string, Texture>& p : textures)
         {
             const std::string& name = p.first;
-            std::shared_ptr<Texture>& tex = p.second;
+            const Texture& tex = p.second;
 
-            rs.SetTexture(tex);
+            tex.Bind();
 
-            float forwardxpos = xpos + 2.f * tex->GetWidth() / m_tex->GetWidth();
-            float forwardypos = ypos + 2.f * tex->GetHeight() / m_tex->GetHeight();
+            float forwardxpos = xpos + 2.f * tex.GetWidth() / m_tex.GetWidth();
+            float forwardypos = ypos + 2.f * tex.GetHeight() / m_tex.GetHeight();
 
-            m_texCoords[name] = GenTexCoord(xpos, ypos, forwardxpos, forwardypos, tex->GetWidth(), tex->GetHeight());
+            m_texCoords[name] = GenTexCoord(xpos, ypos, forwardxpos, forwardypos, tex.GetWidth(), tex.GetHeight());
 
             std::vector<float> data
             {
@@ -58,8 +53,8 @@ namespace Lexa
                 forwardxpos, forwardypos, 1.f, 0.f
             };
 
-            vao->AddData(data);
-            rs.Draw();
+            vao.SetVertexData(data);
+            rs.Draw(vao.GetSize());
 
             xpos += xinc;
             if (xpos > 1.f)
@@ -68,19 +63,10 @@ namespace Lexa
                 ypos += yinc;
             }
         }
-
-        if (!oldRt.expired())
-            rs.SetRenderTarget(oldRt.lock());
-        if (!oldShader.expired())
-            rs.SetShader(oldShader.lock());
-        if (!oldTex.expired())
-            rs.SetTexture(oldTex.lock());
-        if (!oldVao.expired())
-            rs.SetVertexBuffer(oldVao.lock());
 	}
 
 
-    const std::shared_ptr<Texture>& TextureAtlas::GetTexture() const
+    const Texture& TextureAtlas::GetTexture() const
     {
         return m_tex;
     }
@@ -103,7 +89,7 @@ namespace Lexa
     }
 
 
-    std::shared_ptr<Texture> TextureAtlas::Create(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures)
+    Texture TextureAtlas::Create(const std::unordered_map<std::string, Texture>& textures)
     {
         m_perTexWidth = std::max_element
         (
@@ -111,12 +97,12 @@ namespace Lexa
             textures.end(), 
             []
             (
-                const std::pair<const std::string, std::shared_ptr<Texture>>& l, const std::pair<std::string, std::shared_ptr<Texture>>& r)
+                const std::pair<const std::string, Texture>& l, const std::pair<const std::string, Texture>& r)
                 {
-                    return l.second->GetWidth() < r.second->GetWidth(); 
+                    return l.second.GetWidth() < r.second.GetWidth(); 
                 }
             )
-            ->second->GetWidth();
+            ->second.GetWidth();
         
         m_perTexHeight = std::max_element
         (
@@ -124,12 +110,12 @@ namespace Lexa
             textures.end(), 
             []
             (
-                const std::pair<const std::string, std::shared_ptr<Texture>>& l, const std::pair<std::string, std::shared_ptr<Texture>>& r)
+                const std::pair<const std::string, Texture>& l, const std::pair<const std::string, Texture>& r)
                 {
-                    return l.second->GetHeight() < r.second->GetHeight(); 
+                    return l.second.GetHeight() < r.second.GetHeight(); 
                 }
         )
-        ->second->GetHeight();
+        ->second.GetHeight();
 
         int ntex = textures.size();
 
@@ -142,7 +128,7 @@ namespace Lexa
             renderTargetHeight *= 2;
         }
 
-        return std::make_shared<Texture>(renderTargetWidth, renderTargetHeight, Texture::Format::RGBA);
+        return Texture(renderTargetWidth, renderTargetHeight, Texture::Format::RGBA);
     }
 
 

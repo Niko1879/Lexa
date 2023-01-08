@@ -3,18 +3,19 @@
 
 namespace Lexa
 {
-    TextRenderer::TextRenderer() : m_vao(std::make_shared<VertexBuffer>(std::vector<int>{2, 2}, VertexBuffer::Format::DYNAMIC))
+    TextRenderer::TextRenderer() : m_vao(std::vector<int>{2, 2}, VertexBuffer::Format::DYNAMIC)
     {
 
     }
 
-	std::shared_ptr<const VertexBuffer> TextRenderer::GetGeometry() const
+
+	const VertexBuffer& TextRenderer::GetGeometry() const
 	{
         return m_vao;
 	}
 
     
-    void TextRenderer::Update(const Textbox& textbox, const TextManager& textManager, const Window& context)
+    void TextRenderer::Generate(const Textbox& textbox, const TextManager& textManager, const Window& context)
     {
         const std::string& text = textbox.GetText();
         const std::string& font = textbox.GetFont();
@@ -76,7 +77,7 @@ namespace Lexa
             ypos = oldy;
         }
 
-        m_vao->AddData(vertices);
-        m_vao->AddIndices(indices);
+        m_vao.SetVertexData(vertices);
+        m_vao.SetIndexData(indices);
     }
 }

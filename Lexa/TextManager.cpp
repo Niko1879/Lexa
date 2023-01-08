@@ -1,5 +1,3 @@
-#include <ft2build.h>
-#include FT_FREETYPE_H
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -24,7 +22,7 @@ namespace Lexa
     }
 
 
-	void TextManager::AddFont(const std::string& name, const std::string& path, unsigned size)
+	void TextManager::AddFont(const std::string& name, const std::string& path, unsigned size, const Shader& shader)
 	{
         FT_Face _face;
         FT_New_Face(s_FtLibrary.get(), path.c_str(), 0, &_face);
@@ -34,7 +32,7 @@ namespace Lexa
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        std::unordered_map<std::string, std::shared_ptr<Texture>> characters;
+        std::unordered_map<std::string, Texture> characters;
 
         for (unsigned char c = 0; c < 128; c++)
         {
@@ -53,7 +51,13 @@ namespace Lexa
             }
 
             std::string ch(1, c);
-            characters[ch] = std::make_shared<Texture>(width, height, Texture::Format::RGBA, data);
+            characters.emplace
+            (
+                std::piecewise_construct,
+                std::forward_as_tuple(ch),
+                std::forward_as_tuple(width, height, Texture::Format::RGBA, data)
+            );
+
             m_charInfo[size][name][ch] = CharInfo{face->glyph->advance.x >> 6, height - face->glyph->bitmap_top};
         }
 
@@ -63,7 +67,7 @@ namespace Lexa
         (
             std::piecewise_construct,
             std::forward_as_tuple(name),
-            std::forward_as_tuple(characters)
+            std::forward_as_tuple(characters, shader)
         );
 	}
 

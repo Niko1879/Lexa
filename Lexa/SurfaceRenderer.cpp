@@ -1,5 +1,6 @@
 #include "SurfaceRenderer.h"
 
+
 namespace Lexa
 {
 	glm::vec3 ComputeCentroid(const std::vector<float>& vertices, int numAttrib)
@@ -71,7 +72,7 @@ namespace Lexa
 
 	
 	SurfaceRenderer::SurfaceRenderer() 
-		: m_vao(std::make_shared<VertexBuffer>(std::vector<int>{3, 3})),
+		: m_vao(std::vector<int>{3, 3}),
 		  m_centroid(0.f)
 	{
 
@@ -132,8 +133,8 @@ namespace Lexa
 			vertexAttributes.push_back(normals[i + 2]);
 		}
 
-		m_vao.AddData(vertexAttributes);
-		m_vao.AddIndices(indices);
+		m_vao.SetVertexData(vertexAttributes);
+		m_vao.SetIndexData(indices);
 	}
 
 

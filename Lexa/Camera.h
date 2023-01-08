@@ -1,7 +1,7 @@
 #pragma once
-#include <memory>
 
-#include "glm/glm.hpp"
+#include <memory>
+#include <glm/glm.hpp>
 
 
 namespace Lexa
@@ -35,4 +35,3 @@ namespace Lexa
 		glm::vec3 m_cameraY;
 	};
 }
-

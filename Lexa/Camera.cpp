@@ -51,7 +51,7 @@ namespace Lexa
 	}
 
 
-	void Camera::Rotate(float x, float yy)
+	void Camera::Rotate(float x, float y)
 	{
 		float thetaX = glm::radians(-x);
 		float thetaY = glm::radians(-y);

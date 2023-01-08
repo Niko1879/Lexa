@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "Textbox.h"
 #include "VertexBuffer.h"
 #include "Window.h"
@@ -13,12 +12,11 @@ namespace Lexa
 	public:
 		TextRenderer();
 
-		std::shared_ptr<const VertexBuffer> GetGeometry() const;
+		const VertexBuffer& GetGeometry() const;
 
-		void Update(const Textbox& textbox, const TextManager& textManager, const Window& context);
+		void Generate(const Textbox& textbox, const TextManager& textManager, const Window& context);
 
 	private:
-		std::shared_ptr<VertexBuffer> m_vao;
+		VertexBuffer m_vao;
 	};
 }
-

@@ -1,6 +1,8 @@
-#include "IO.h"
 #include <sstream>
 #include <fstream>
+
+#include "IO.h"
+
 
 namespace Lexa
 {
