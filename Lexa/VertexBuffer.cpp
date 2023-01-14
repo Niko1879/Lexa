@@ -2,7 +2,6 @@
 #include <unordered_map>
 
 #include "VertexBuffer.h"
-#include "RenderState.h"
 
 
 namespace Lexa
@@ -35,6 +34,7 @@ namespace Lexa
 
 	VertexBuffer::VertexBuffer(std::vector<int> properties, Format format) : VertexBuffer(format)
 	{
+		Bind();
 		for (int i : properties)
 			AddProperty(i);
 	}

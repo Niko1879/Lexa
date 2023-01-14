@@ -2,7 +2,6 @@
 #include <glad/glad.h>
 
 #include "Texture.h"
-#include "RenderState.h"
 
 
 namespace Lexa

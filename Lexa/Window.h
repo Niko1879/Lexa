@@ -1,8 +1,7 @@
 #pragma once
 
 #include <memory>
-
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
 
 
 namespace Lexa
@@ -21,6 +20,9 @@ namespace Lexa
 		void Clear();
 
 		void MakeCurrent();
+
+		using WindowPtr = GLFWwindow*;
+		WindowPtr Get();
 
 	private:
 		std::unique_ptr<GLFWwindow, void(*)(GLFWwindow*)> m_window;

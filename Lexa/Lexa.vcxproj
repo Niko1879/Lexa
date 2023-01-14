@@ -158,7 +158,6 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="RenderState.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="Textbox.cpp" />
     <ClCompile Include="TextManager.cpp" />
@@ -180,8 +179,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EventHandler.hpp" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="RenderState.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="Textbox.h" />
     <ClInclude Include="TextManager.h" />

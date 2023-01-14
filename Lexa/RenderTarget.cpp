@@ -1,7 +1,6 @@
 #include <glad/glad.h>
 
 #include "RenderTarget.h"
-#include "RenderState.h"
 
 
 namespace Lexa

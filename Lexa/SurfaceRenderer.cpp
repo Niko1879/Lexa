@@ -87,6 +87,8 @@ namespace Lexa
 
 	void SurfaceRenderer::Generate(const Interpreter::Eval2D& eval, float xmin, float xmax, float ymin, float ymax, float step)
 	{
+		m_vao.Bind();
+
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
 		float tolerance = step / 10.0f;

@@ -1,7 +1,6 @@
 #include <algorithm> 
 
 #include "VertexBuffer.h"
-#include "RenderState.h"
 #include "RenderTarget.h"
 #include "TextureAtlas.h"
 
@@ -14,7 +13,6 @@ namespace Lexa
         static VertexBuffer vao(std::vector<int>{2, 2}, VertexBuffer::Format::DYNAMIC);
         RenderTarget rt;
         rt.SetTarget(m_tex);
-        RenderState& rs = RenderState::Instance();
 
         rt.Bind();
         shader.Bind();
@@ -54,7 +52,7 @@ namespace Lexa
             };
 
             vao.SetVertexData(data);
-            rs.Draw(vao.GetSize());
+            glDrawElements(GL_TRIANGLES, vao.GetSize(), GL_UNSIGNED_INT, 0);
 
             xpos += xinc;
             if (xpos > 1.f)

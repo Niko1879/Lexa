@@ -17,6 +17,7 @@ namespace Lexa
     
     void TextRenderer::Generate(const Textbox& textbox, const TextManager& textManager, const Window& context)
     {
+        m_vao.Bind();
         const std::string& text = textbox.GetText();
         const std::string& font = textbox.GetFont();
         int fontSize = textbox.GetFontSize();

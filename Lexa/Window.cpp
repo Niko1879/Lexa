@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 
 #include "Window.h"
+#include "EventHandler.hpp"
 
 
 namespace Lexa
@@ -16,6 +17,12 @@ namespace Lexa
 		{
 			MakeCurrent();
 		}
+	}
+
+
+	void Window::MakeCurrent()
+	{
+		glfwMakeContextCurrent(m_window.get());
 	}
 
 
@@ -46,9 +53,8 @@ namespace Lexa
 	}
 
 
-	void Window::MakeCurrent()
+	Window::WindowPtr Window::Get()
 	{
-		glfwMakeContextCurrent(m_window.get());
+		return m_window.get();
 	}
-
 }
