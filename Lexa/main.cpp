@@ -1,32 +1,21 @@
-#include <iostream>
-#include <map>
-#include <string>
-
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include <Lexer.h>
+#include <Parser.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#include "shader.h"
 #include "Window.h"
-#include "Texture.h"
-#include "VertexBuffer.h"
-#include "TextureAtlas.h"
-#include "TextManager.h"
-#include "Textbox.h"
 #include "Camera.h"
 #include "InputManager.h"
+#include "Shader.h"
+#include "TextManager.h"
+#include "TextureAtlas.h"
+#include "Textbox.h"
+#include "VertexBuffer.h"
 #include "TextRenderer.h"
 #include "SurfaceRenderer.h"
-#include <Parser.h>
-#include <Lexer.h>
+
 
 using namespace Lexa;
+
 
 int main()
 {
@@ -164,7 +153,7 @@ int main()
             Interpreter::Eval2D eval(Interpreter::Parse(Interpreter::Tokenise(eq)));
             SurfaceRenderer surfaceRenderer;
             surfaceRenderer.Generate(eval, -1.f, 1.f, -1.f, 1.f, 0.1f);
-            //camera.SetCenterOfRotation(surfaceRenderer.GetCentroid());
+            camera.SetCenterOfRotation(surfaceRenderer.GetCentroid());
             glDrawElements(GL_TRIANGLES, surfaceRenderer.GetGeometry().GetSize(), GL_UNSIGNED_INT, 0);
             drawSurface = true;
         }

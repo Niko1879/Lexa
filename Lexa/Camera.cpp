@@ -1,4 +1,6 @@
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "Camera.h"
 #include "GLFW/glfw3.h"
@@ -53,23 +55,9 @@ namespace Lexa
 
 	void Camera::Rotate(float x, float y)
 	{
-		float thetaX = glm::radians(-x);
-		float thetaY = glm::radians(-y);
-		glm::mat4 id(1.0f);
-		id = glm::rotate(id, thetaY, m_cameraX);
-		id = glm::rotate(id, thetaX, m_cameraY);
-
-		glm::vec4 cameraXNew = id * glm::vec4(m_cameraX, 1.0f);
-		glm::vec4 cameraYNew = id * glm::vec4(m_cameraY, 1.0f);
-		glm::vec4 cameraZNew = id * glm::vec4(m_cameraZ, 1.0f);
-		glm::vec4 cameraPosNew = id * glm::vec4(m_cameraPos, 1.0f);
-
-		m_cameraX = glm::normalize(glm::vec3(cameraXNew.x, cameraXNew.y, cameraXNew.z));
-		m_cameraY = glm::normalize(glm::vec3(cameraYNew.x, cameraYNew.y, cameraYNew.z));
-		m_cameraZ = glm::normalize(glm::vec3(cameraZNew.x, cameraZNew.y, cameraZNew.z));
-		m_cameraPos = glm::vec3(cameraPosNew.x, cameraPosNew.y, cameraPosNew.z);
-
-		m_view = glm::lookAt(m_cameraPos, m_cameraTarget, m_cameraY);
+		static glm::quat rotation(1.f, 0.f, 0.f, 0.f);
+		rotation = glm::angleAxis(0.06f, glm::normalize(glm::vec3(-y, -x, 0.f))) * rotation;
+		m_view = glm::lookAt(rotation * m_cameraPos, m_cameraTarget, rotation * m_cameraY);
 	}
 
 
