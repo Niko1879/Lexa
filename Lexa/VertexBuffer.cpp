@@ -48,12 +48,14 @@ namespace Lexa
 
 	void VertexBuffer::SetVertexData(const std::vector<float>& data)
 	{
+		Bind();
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * data.size(), data.data(), m_format);
 	}
 
 
 	void VertexBuffer::SetIndexData(const std::vector<GLuint>& indices)
 	{
+		Bind();
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * indices.size(), indices.data(), m_format);
 		m_nindices = indices.size();
 	}

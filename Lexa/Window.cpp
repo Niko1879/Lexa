@@ -42,13 +42,12 @@ namespace Lexa
 	{
 		m_width = width;
 		m_height = height;
-		glViewport(0, 0, m_width, m_height);
 	}
 
 
 	void Window::Clear()
 	{
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(1.f, 0.75f, 0.8f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 

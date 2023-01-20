@@ -12,6 +12,22 @@
 
 namespace Lexa
 {
+	struct CharInfo
+	{
+		int xOffset;
+		int yOffset;
+	};
+
+	struct Font
+	{
+		Font(const std::unordered_map<std::string, Texture>& textures, const Shader& shader, const std::unordered_map<std::string, CharInfo>& charInfo)
+			: textureAtlas(textures, shader),
+			  charInfo(charInfo)
+		{}
+		TextureAtlas textureAtlas;
+		std::unordered_map<std::string, CharInfo> charInfo;
+	};
+
 	class TextManager
 	{
 	public:
@@ -19,19 +35,10 @@ namespace Lexa
 
 		void AddFont(const std::string& name, const std::string& path, unsigned size, const Shader& shader);
 
-		const TextureAtlas& GetFont(const std::string& font, unsigned size) const;
-
-		struct CharInfo
-		{
-			int xOffset;
-			int yOffset;
-		};
-
-		const CharInfo& GetCharInfo(const std::string& font, unsigned size, const std::string& c) const;
+		const Font& GetFont(const std::string& font, unsigned size) const;
 
 	private:
-		std::unordered_map<unsigned, std::unordered_map<std::string, TextureAtlas>> m_fonts;
-		std::unordered_map<unsigned, std::unordered_map<std::string, std::unordered_map<std::string, CharInfo>>> m_charInfo;
+		std::unordered_map<unsigned, std::unordered_map<std::string, Font>> m_fonts;
 		static std::unique_ptr<std::remove_pointer<FT_Library>::type, void(*)(FT_Library)> s_FtLibrary;
 	};
 }

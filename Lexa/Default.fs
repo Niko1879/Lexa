@@ -1,7 +1,9 @@
 #version 330 core
-out vec4 color;
+out vec4 fColor;
+
+uniform vec3 color;
 
 void main()
 {    
-    color = vec4(1.f, 1.f, 1.f, 1.f);
+    fColor = vec4(color, 1.f);
 } 

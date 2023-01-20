@@ -28,7 +28,7 @@ namespace Lexa
 			return *instances.at(inst).get();
 		}
 
-		void operator()(Args&&... args)
+		void operator()(Args... args)
 		{
 			for (Handler& c : m_callbacks)
 				c.f(std::forward<Args>(args)...);

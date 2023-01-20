@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "TextRenderer.h"
 
 
@@ -19,27 +21,41 @@ namespace Lexa
     {
         m_vao.Bind();
         const std::string& text = textbox.GetText();
-        const std::string& font = textbox.GetFont();
+        const std::string& fontStr = textbox.GetFont();
         int fontSize = textbox.GetFontSize();
+        const Font& font = textManager.GetFont(fontStr, fontSize);
 
         std::pair<int, int> pos = textbox.GetPosition();
-        float xpos = 2.f * pos.first / (float)context.GetWidth() - 1.f;
-        float ypos = 2.f * pos.second / (float)context.GetHeight() - 1.f;
+        float scrWidth = context.GetWidth();
+        float scrHeight = context.GetHeight();
+        float xpos = 2.f * pos.first / scrWidth - 1.f;
+        float ypos = 2.f * pos.second / scrHeight - 1.f;
+        float scale = textbox.GetFontScale();
 
         std::vector<float> vertices;
         std::vector<unsigned> indices;
         int index = 0;
 
-        for (char c : textbox.GetText())
+        float yBearing = scale * 2.f * 
+            std::max_element(font.charInfo.begin(), font.charInfo.end(), [](const std::pair<std::string, CharInfo>& a, const std::pair<std::string, CharInfo>& b)
+            {
+                return a.second.yOffset < b.second.yOffset;
+            })
+            ->second.yOffset / scrHeight;
+
+        for (char c : text)
         {
             std::string ch(1, c);
 
-            TextureAtlas::TextureInfo texData = textManager.GetFont(font, fontSize).GetTextureData(ch);
-            const TextManager::CharInfo& charInfo = textManager.GetCharInfo(font, fontSize, ch);
+            TextureAtlas::TextureInfo texData = font.textureAtlas.GetTextureData(ch);
+            const CharInfo& charInfo = font.charInfo.at(ch);
 
-            float yoffset = 2.f * charInfo.yOffset / (float)context.GetHeight();
+            float yoffset = scale * 2.f * charInfo.yOffset / scrHeight;
             float oldy = ypos;
-            ypos = ypos - yoffset;
+            ypos = ypos - yoffset + yBearing;
+
+            float forwardXpos = xpos + scale * 2.f * texData.width / scrWidth;
+            float forwardYpos = ypos + scale * 2.f * texData.height / scrHeight;
 
             //bottomleft
             vertices.push_back(xpos);
@@ -49,18 +65,18 @@ namespace Lexa
 
             //topleft
             vertices.push_back(xpos);
-            vertices.push_back(ypos + 2.f * (float)texData.height / context.GetHeight());
+            vertices.push_back(forwardYpos);
             vertices.push_back(texData.topLeftU);
             vertices.push_back(texData.topLeftV);
 
             //topright
-            vertices.push_back(xpos + 2.f * (float)texData.width / context.GetWidth());
-            vertices.push_back(ypos + 2.f * (float)texData.height / context.GetHeight());
+            vertices.push_back(forwardXpos);
+            vertices.push_back(forwardYpos);
             vertices.push_back(texData.topRightU);
             vertices.push_back(texData.topRightV);
 
             //bottomright
-            vertices.push_back(xpos + 2.f * (float)texData.width / context.GetWidth());
+            vertices.push_back(forwardXpos);
             vertices.push_back(ypos);
             vertices.push_back(texData.bottomRightU);
             vertices.push_back(texData.bottomRightV);
@@ -74,7 +90,7 @@ namespace Lexa
             indices.push_back(2 + index);
 
             index += 4;
-            xpos += 2.f * (float)charInfo.xOffset / (float)context.GetWidth();
+            xpos += scale * 2.f * charInfo.xOffset / scrWidth;
             ypos = oldy;
         }
 

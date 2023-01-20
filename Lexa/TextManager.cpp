@@ -33,11 +33,15 @@ namespace Lexa
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         std::unordered_map<std::string, Texture> characters;
+        std::unordered_map<std::string, CharInfo> charInfo;
 
         for (unsigned char c = 0; c < 128; c++)
         {
-            FT_Load_Char(face.get(), c, FT_LOAD_RENDER);
-
+            int error = FT_Load_Char(face.get(), c, FT_LOAD_RENDER);
+            if (error)
+            {
+                int x = 1;
+            }
             std::vector<uint8_t> data;
             int width = face->glyph->bitmap.width;
             int height = face->glyph->bitmap.rows;
@@ -58,28 +62,17 @@ namespace Lexa
                 std::forward_as_tuple(width, height, Texture::Format::RGBA, data)
             );
 
-            m_charInfo[size][name][ch] = CharInfo{face->glyph->advance.x >> 6, height - face->glyph->bitmap_top};
+            charInfo[ch] = CharInfo{face->glyph->advance.x >> 6, height - face->glyph->bitmap_top};
         }
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
-        m_fonts[size].emplace
-        (
-            std::piecewise_construct,
-            std::forward_as_tuple(name),
-            std::forward_as_tuple(characters, shader)
-        );
+        m_fonts[size].emplace(std::piecewise_construct, std::forward_as_tuple(name), std::forward_as_tuple(characters, shader, charInfo));
 	}
 
 
-    const TextureAtlas& TextManager::GetFont(const std::string& font, unsigned size) const
+    const Font& TextManager::GetFont(const std::string& font, unsigned size) const
     {
         return m_fonts.at(size).at(font);
-    }
-
-
-    const TextManager::CharInfo& TextManager::GetCharInfo(const std::string& font, unsigned size, const std::string& c) const
-    {
-        return m_charInfo.at(size).at(font).at(c);
     }
 }
