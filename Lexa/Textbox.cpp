@@ -75,8 +75,7 @@ namespace Lexa
 		m_highlightEnd(0.f),
 		m_cursorOffset(0.f),
 		m_fontScale(fontScale),
-		m_active(false),
-		m_highlight(false)
+		m_active(false)
 	{
 
 	}
@@ -136,6 +135,12 @@ namespace Lexa
 	}
 
 
+	std::pair<int, int> Textbox::GetHighlightRegion() const
+	{
+		return std::make_pair(std::min(m_highlightStart, m_highlightEnd), std::max(m_highlightStart, m_highlightEnd));
+	}
+
+
 	void Textbox::SetActive(bool active)
 	{
 		m_active = active;
@@ -156,6 +161,8 @@ namespace Lexa
 		{
 			m_cursorPos = cumulative;
 		}
+
+		EndHighlightRegion();
 	}
 
 
@@ -184,6 +191,10 @@ namespace Lexa
 
 	void Textbox::AddText(const std::string& text, const TextManager& textManager)
 	{
+		bool doHighlight = m_highlightIdxStart != m_highlightIdxEnd;
+		if (doHighlight)
+			EraseHighlightedRegion(textManager);
+
 		if (m_active && !text.empty())
 		{
 			size_t idx = 0;
@@ -193,7 +204,8 @@ namespace Lexa
 			{
 				if (ch == "\b")
 				{
-					EraseChar(textManager);
+					if (!doHighlight)
+						EraseChar(textManager);
 				}
 
 				else
@@ -300,14 +312,29 @@ namespace Lexa
 	}
 
 
-	void Textbox::EraseHighlightedRegion()
+	void Textbox::EraseHighlightedRegion(const TextManager& textManager)
 	{
-		if (m_cursorIdx == m_highlightIdxEnd)
+		int start = std::min(m_highlightIdxStart, m_highlightIdxEnd);
+		int end = std::max(m_highlightIdxStart, m_highlightIdxEnd);
+		
+		if (m_cursorIdx == end)
 		{
-			for (int i = m_cursorIdx; i <= m_highlightIdxStart; ++i)
+			while (m_cursorIdx > start)
 			{
-
+				EraseChar(textManager);
 			}
 		}
+
+		else if (m_cursorIdx == start)
+		{
+			while (m_cursorIdx < end)
+				AdvanceCursor(true);
+			for (int i = start; i < end; ++i)
+			{
+				EraseChar(textManager);
+			}
+		}
+
+		BeginHighlightRegion();
 	}
 }

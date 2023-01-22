@@ -59,7 +59,8 @@ int main()
             textbox.AddText(p.c, textManager);
         });
 
-    InputManager::s_OnMouseButton.Register([&textbox, &window, &textManager](InputManager::OnMouseButtonParams p)
+    bool mouseDown = false;
+    InputManager::s_OnMouseButton.Register([&textbox, &window, &textManager, &mouseDown](InputManager::OnMouseButtonParams p)
         {
             auto [x, y] = InputManager::GetCursorPos(window);
             auto [xpos, ypos] = textbox.GetPosition();
@@ -67,18 +68,22 @@ int main()
             
             if (p.action == InputManager::Action::PRESS || p.action == InputManager::Action::REPEAT)
             {
+                mouseDown = true;
                 textbox.SetActive(false);
                 if (isWithinBounds)
                 {
                     textbox.SetCursorPos(x, y);
+                    textbox.BeginHighlightRegion();
                 }
             }
 
             else
             {
+                mouseDown = false;
                 if (isWithinBounds)
                 {
                     textbox.SetActive(true);
+                    textbox.EndHighlightRegion();
                 }
             }
         });
@@ -107,9 +112,10 @@ int main()
         });
 
     bool rotateCamera = false;
-    InputManager::s_OnMouseMove.Register([&camera, &rotateCamera](InputManager::OnMouseMoveParams p)
+    bool insideTextbox = false;
+    InputManager::s_OnMouseMove.Register([&camera, &rotateCamera, &insideTextbox](InputManager::OnMouseMoveParams p)
         {
-            if (rotateCamera)
+            if (rotateCamera && !insideTextbox)
             {
                 camera.Rotate(p.xDelta, p.yDelta);
             }
@@ -137,6 +143,12 @@ int main()
     bool showCursor = true;
     while (true)
     {
+        auto [xpos, ypos] = textbox.GetPosition();
+        auto [x, y] = InputManager::GetCursorPos(window);
+        insideTextbox = (xpos <= x && x <= xpos + textbox.GetWidth() && ypos <= y && y <= ypos + textbox.GetHeight());
+        if (mouseDown && insideTextbox)
+            textbox.SetCursorPos(x, y);
+
         glViewport(0, 0, window.GetWidth(), window.GetHeight());
         window.Clear();
 
@@ -158,6 +170,14 @@ int main()
         {
             defaultShader.SetUniform4fv("color", glm::vec4(0.f, 0.f, 0.f, 1.f));
             quadRenderer.Generate(textbox.GetCursorPos(), textbox.GetPosition().second + 1, 1, 0.9 * textbox.GetHeight() - 1, window);
+            glDrawElements(GL_TRIANGLES, vao.GetSize(), GL_UNSIGNED_INT, 0);
+        }
+
+        if (insideTextbox)
+        {
+            auto [b, e] = textbox.GetHighlightRegion();
+            defaultShader.SetUniform4fv("color", glm::vec4(0.f, 0.f, 1.f, 0.2f));
+            quadRenderer.Generate(b, textbox.GetPosition().second, e - b, textbox.GetHeight(), window);
             glDrawElements(GL_TRIANGLES, vao.GetSize(), GL_UNSIGNED_INT, 0);
         }
 

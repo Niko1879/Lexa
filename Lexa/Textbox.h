@@ -29,6 +29,8 @@ namespace Lexa
 		int GetCursorPos() const;
 
 		float GetFontScale() const;
+ 
+		std::pair<int, int> GetHighlightRegion() const;
 
 		void SetActive(bool active);
 
@@ -55,7 +57,7 @@ namespace Lexa
 
 		std::pair<float, int> ClampCursorToText(float cursorX) const;
 
-		void EraseHighlightedRegion();
+		void EraseHighlightedRegion(const TextManager& textManager);
 
 		std::string m_text;
 		std::string m_font;
@@ -73,7 +75,6 @@ namespace Lexa
 		float m_cursorOffset;
 		float m_fontScale;
 		bool m_active;
-		bool m_highlight;
 		std::list<float> m_charWidths;
 	};
 }
