@@ -54,6 +54,13 @@ namespace Lexa
 	}
 
 
+	void Shader::SetUniform4fv(const std::string& name, const glm::vec4& vec)
+	{
+		GLint id = GetUniformID(name.c_str());
+		glUniform4fv(id, 1, glm::value_ptr(vec));
+	}
+
+
 	void Shader::SetUniformMatrix4fv(const std::string& name, const glm::mat4& mat)
 	{
 		GLint id = GetUniformID(name.c_str());

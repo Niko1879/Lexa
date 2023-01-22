@@ -32,16 +32,30 @@ namespace Lexa
 
 		void SetActive(bool active);
 
-		void SetCursorPos(float x, float y, const TextManager& textManager);
+		void SetCursorPos(float x, float y);
 
 		void SetPosition(int x, int y);
 
+		void BeginHighlightRegion();
+
+		void EndHighlightRegion();
+
 		void AddText(const std::string& text, const TextManager& textManager);
 
+		void AdvanceCursor(int amount);
+
 	private:
+		void AddChar(const std::string& ch, const TextManager& textManager);
+
+		void EraseChar(const TextManager& textManager);
+
+		void AdvanceCursor(bool dir);
+
 		bool IsWithinBounds(const std::string& toAppend, const TextManager& textManager) const;
 
-		void AlignCursor(const TextManager& textManager);
+		std::pair<float, int> ClampCursorToText(float cursorX) const;
+
+		void EraseHighlightedRegion();
 
 		std::string m_text;
 		std::string m_font;
@@ -51,10 +65,15 @@ namespace Lexa
 		int m_x;
 		int m_y;
 		int m_cursorIdx;
+		int m_highlightIdxStart;
+		int m_highlightIdxEnd;
+		float m_highlightStart;
+		float m_highlightEnd;
 		float m_cursorPos;
 		float m_cursorOffset;
-		bool m_active;
 		float m_fontScale;
+		bool m_active;
+		bool m_highlight;
 		std::list<float> m_charWidths;
 	};
 }

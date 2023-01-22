@@ -61,28 +61,26 @@ int main()
 
     InputManager::s_OnMouseButton.Register([&textbox, &window, &textManager](InputManager::OnMouseButtonParams p)
         {
-            bool b1 = p.action == InputManager::Action::PRESS && p.button == InputManager::MouseButton::LEFT;
-            auto[x, y] = InputManager::GetCursorPos(window);
+            auto [x, y] = InputManager::GetCursorPos(window);
             auto [xpos, ypos] = textbox.GetPosition();
-            bool b2 = xpos <= x && x <= xpos + textbox.GetWidth() &&
-                      ypos <= y && y <= ypos + textbox.GetHeight();
+            bool isWithinBounds = xpos <= x && x <= xpos + textbox.GetWidth() && ypos <= y && y <= ypos + textbox.GetHeight();
             
-            if (b1 && b2)
-            {
-                textbox.SetActive(true);
-                textbox.SetCursorPos(x, y, textManager);
-            }
-
-            if (!b2)
+            if (p.action == InputManager::Action::PRESS || p.action == InputManager::Action::REPEAT)
             {
                 textbox.SetActive(false);
+                if (isWithinBounds)
+                {
+                    textbox.SetCursorPos(x, y);
+                }
             }
 
-            if (b1)
+            else
             {
-                textbox.SetCursorPos(x, y, textManager);
+                if (isWithinBounds)
+                {
+                    textbox.SetActive(true);
+                }
             }
-            
         });
 
     std::unique_ptr<Interpreter::Eval2D> eval = nullptr;
@@ -146,7 +144,7 @@ int main()
         quadRenderer.Generate(textbox.GetPosition().first, textbox.GetPosition().second, textbox.GetWidth(), textbox.GetHeight(), window);
         const VertexBuffer& vao = quadRenderer.GetGeometry();
         vao.Bind();
-        defaultShader.SetUniform3fv("color", glm::vec3(1.f, 1.f, 1.f));
+        defaultShader.SetUniform4fv("color", glm::vec4(1.f, 1.f, 1.f, 1.f));
         glDrawElements(GL_TRIANGLES, vao.GetSize(), GL_UNSIGNED_INT, 0);
 
         ++timer;
@@ -158,7 +156,7 @@ int main()
 
         if (showCursor)
         {
-            defaultShader.SetUniform3fv("color", glm::vec3(0.f, 0.f, 0.f));
+            defaultShader.SetUniform4fv("color", glm::vec4(0.f, 0.f, 0.f, 1.f));
             quadRenderer.Generate(textbox.GetCursorPos(), textbox.GetPosition().second + 1, 1, 0.9 * textbox.GetHeight() - 1, window);
             glDrawElements(GL_TRIANGLES, vao.GetSize(), GL_UNSIGNED_INT, 0);
         }

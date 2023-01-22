@@ -18,6 +18,8 @@ namespace Lexa
 
 		void SetUniform3fv(const std::string& name, const glm::vec3& vec);
 
+		void SetUniform4fv(const std::string& name, const glm::vec4& vec);
+
 		void SetUniformMatrix4fv(const std::string& name, const glm::mat4& mat);
 
 		void Bind() const;

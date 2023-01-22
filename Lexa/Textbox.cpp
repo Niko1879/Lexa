@@ -9,7 +9,7 @@ namespace Lexa
 	{
 		char first = 0x80;
 		char second = 0x40;
-		size_t n = index;
+		size_t n = 0;
 		while (n < amount && index < str.size())
 		{
 			++index;
@@ -49,7 +49,7 @@ namespace Lexa
 		char first = 0x80;
 		char second = 0x40;
 		char c;
-		while (((c = str[index]) != '\0') && (c & first) && !(c & second))
+		while (index <= str.size() && ((c = str[index]) != '\0') && (c & first) && !(c & second))
 		{
 			res += c;
 			++index;
@@ -60,18 +60,23 @@ namespace Lexa
 
 
 	Textbox::Textbox(int width, int height, int x, int y, const std::string& font, int fontSize, float fontScale) :
-		m_width(width), 
-		m_height(height), 
-		m_active(false),
-		m_x(x),
-		m_y(y),
 		m_text(""),
 		m_font(font),
 		m_fontSize(fontSize),
+		m_width(width), 
+		m_height(height), 
+		m_x(x),
+		m_y(y),
 		m_cursorIdx(0),
 		m_cursorPos(x),
+		m_highlightIdxStart(0),
+		m_highlightIdxEnd(0),
+		m_highlightStart(0.f),
+		m_highlightEnd(0.f),
 		m_cursorOffset(0.f),
-		m_fontScale(fontScale)
+		m_fontScale(fontScale),
+		m_active(false),
+		m_highlight(false)
 	{
 
 	}
@@ -137,26 +142,9 @@ namespace Lexa
 	}
 
 
-	void Textbox::SetCursorPos(float x, float y, const TextManager& textManager)
+	void Textbox::SetCursorPos(float x, float y)
 	{
-		float cumulative = m_x;
-		int idx = -1;
-
-		for (float i : m_charWidths)
-		{
-			cumulative += i;
-			++idx;
-			if (cumulative > x)
-			{
-				float prev = cumulative - i;
-				if (x - prev < cumulative - x)
-				{
-					--idx;
-					cumulative = prev;
-				}
-				break;
-			}
-		}
+		auto [cumulative, idx] = ClampCursorToText(x);
 
 		m_cursorIdx = idx;
 		if (idx == -1)
@@ -167,7 +155,6 @@ namespace Lexa
 		else
 		{
 			m_cursorPos = cumulative;
-			AlignCursor(textManager);
 		}
 	}
 
@@ -179,51 +166,104 @@ namespace Lexa
 	}
 
 
+	void Textbox::BeginHighlightRegion()
+	{
+		m_highlightIdxStart = m_cursorIdx;
+		m_highlightStart = m_cursorPos;
+		m_highlightIdxEnd = m_cursorIdx;
+		m_highlightEnd = m_cursorPos;
+	}
+
+
+	void Textbox::EndHighlightRegion()
+	{
+		m_highlightIdxEnd = m_cursorIdx;
+		m_highlightEnd = m_cursorPos;
+	}
+
+
 	void Textbox::AddText(const std::string& text, const TextManager& textManager)
 	{
-		if (!m_active || text.empty())
+		if (m_active && !text.empty())
+		{
+			size_t idx = 0;
+			std::string ch;
+
+			while ((ch = GetCharUtf8(text, idx++))[0] != '\0')
+			{
+				if (ch == "\b")
+				{
+					EraseChar(textManager);
+				}
+
+				else
+				{
+					AddChar(ch, textManager);
+				}
+			}
+		}
+	}
+
+	void Textbox::AdvanceCursor(int amount)
+	{
+		bool dir = amount >= 0;
+		for (int i = std::min(0, amount); i <= std::max(0, amount); ++i)
+		{
+			AdvanceCursor(dir);
+		}
+	}
+
+
+	void Textbox::AddChar(const std::string& ch, const TextManager& textManager)
+	{
+		float x = m_fontScale * textManager.GetFont(m_font, m_fontSize).charInfo.at(ch).xOffset;
+		std::list<float>::iterator it = m_charWidths.begin();
+		std::advance(it, std::min((int)m_charWidths.size(), m_cursorIdx + 1));
+
+		std::string left = SubstrUtf8(m_text, 0, m_cursorIdx + 1);
+		std::string right = SubstrUtf8(m_text, m_cursorIdx + 1, m_text.size());
+
+		if (it == m_charWidths.end())
+		{
+			m_charWidths.push_back(x);
+		}
+
+		else
+		{
+			m_charWidths.insert(it, x);
+		}
+
+		m_text = left + ch + right;
+		AdvanceCursor(true);
+	}
+
+
+	void Textbox::EraseChar(const TextManager& textManager)
+	{
+		std::string left = SubstrUtf8(m_text, 0, m_cursorIdx + 1);
+		std::string right = SubstrUtf8(m_text, m_cursorIdx + 1, m_text.size());
+
+		float x = m_fontScale * textManager.GetFont(m_font, m_fontSize).charInfo.at(GetCharUtf8(m_text, m_text.size() - 1)).xOffset;
+		std::list<float>::iterator it = m_charWidths.begin();
+		std::advance(it, std::max(0, m_cursorIdx));
+		PopBackUtf8(left);
+		m_text = left + right;
+		AdvanceCursor(false);
+		m_charWidths.erase(it);
+	}
+
+
+	void Textbox::AdvanceCursor(bool dir)
+	{
+		if (((m_cursorIdx < 0) && !dir) || ((m_cursorIdx == m_text.size() - 1) && dir))
 			return;
 
-		const Font& font = textManager.GetFont(m_font, m_fontSize);
-
-		int substr = m_cursorIdx + 1;
-		std::string left = SubstrUtf8(m_text, 0, substr);
-		std::string right = SubstrUtf8(m_text, substr, m_text.size());
-
-		auto it = m_charWidths.begin();
-
-		if (text == "\b")
-		{
-			if (!left.empty())
-			{
-				PopBackUtf8(left);
-				int idx = std::max(0, m_cursorIdx);
-				std::advance(it, idx);
-				m_cursorPos -= *it;
-				m_charWidths.erase(it);
-				--m_cursorIdx;
-			}
-		}
-
-		else if (IsWithinBounds(text, textManager))
-		{
-			left += text;
-			float x = m_fontScale * font.charInfo.at(text).xOffset;
-			std::advance(it, std::max(0, m_cursorIdx + 1));
-			if (it == m_charWidths.end())
-			{
-				m_charWidths.push_back(x);
-			}
-			else
-			{
-				m_charWidths.insert(it, x);
-			}
-			++m_cursorIdx;
-			m_cursorPos += x;
-		}
-
-		m_text = left + right;
-		AlignCursor(textManager);
+		int nextCharIdx = dir ? m_cursorIdx + 1 : m_cursorIdx;
+		std::list<float>::iterator it = m_charWidths.begin();
+		std::advance(it, (std::min(std::max(nextCharIdx, 0), (int)m_charWidths.size())));
+		float x =  *it;
+		dir ? m_cursorPos += x : m_cursorPos -= x;
+		dir ? ++m_cursorIdx : --m_cursorIdx;
 	}
 
 
@@ -235,14 +275,39 @@ namespace Lexa
 	}
 
 
-	void Textbox::AlignCursor(const TextManager& textManager)
+	std::pair<float, int> Textbox::ClampCursorToText(float cursorX) const
 	{
-		std::string ch = GetCharUtf8(m_text, Advance(m_text, 0, m_cursorIdx));
-		const Font& font = textManager.GetFont(m_font, m_fontSize);
-		int width = font.textureAtlas.GetTextureData(ch).width;
-		int xOffset = font.charInfo.at(ch).xOffset;
-		float delta = m_fontScale * (xOffset - width);
-		m_cursorPos = m_cursorPos + m_cursorOffset - delta;
-		m_cursorOffset = delta;
+		float cumulative = m_x;
+		int idx = -1;
+
+		for (float i : m_charWidths)
+		{
+			cumulative += i;
+			++idx;
+			if (cumulative > cursorX)
+			{
+				float prev = cumulative - i;
+				if (cursorX - prev < cumulative - cursorX)
+				{
+					--idx;
+					cumulative = prev;
+				}
+				break;
+			}
+		}
+
+		return std::make_pair(cumulative, idx);
+	}
+
+
+	void Textbox::EraseHighlightedRegion()
+	{
+		if (m_cursorIdx == m_highlightIdxEnd)
+		{
+			for (int i = m_cursorIdx; i <= m_highlightIdxStart; ++i)
+			{
+
+			}
+		}
 	}
 }
