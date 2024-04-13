@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <Lexer.h>
 #include <Parser.h>
+#include <chrono>
 
 #include "Window.h"
 #include "Camera.h"
@@ -139,7 +140,7 @@ int main()
         });
 
 
-    int timer = 0;
+    auto timer = std::chrono::high_resolution_clock::now();
     bool showCursor = true;
     while (true)
     {
@@ -159,11 +160,12 @@ int main()
         defaultShader.SetUniform4fv("color", glm::vec4(1.f, 1.f, 1.f, 1.f));
         glDrawElements(GL_TRIANGLES, vao.GetSize(), GL_UNSIGNED_INT, 0);
 
-        ++timer;
-        if (timer % 100 == 0)
+        auto now = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - timer).count();
+        if (duration >= 700ll)
         {
-            timer = 0;
             showCursor = !showCursor;
+            timer = now;
         }
 
         if (showCursor)
